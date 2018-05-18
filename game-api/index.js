@@ -22,11 +22,12 @@ module.exports.Room = class Room {
     getAnotherPlayers(player) {
         const playerID = player.id;
         let anotherPlayers = [];
-        for (let anotherPlayer in this._players) {
-            if (anotherPlayer.id !== playerID) {
-                anotherPlayers.push(anotherPlayer);
+        for (let anotherPlayerId in this._players) {
+            if (this._players[anotherPlayerId].id !== playerID) {
+                anotherPlayers.push(this._players[anotherPlayerId]);
             }
         }
+        return anotherPlayers;
     }
 
     getPlayerById(id) {

@@ -17,7 +17,7 @@ const ROOM_CREATED = 'room created';
 const ROOM_CONNECTED = 'connected to the room';
 const OPPONENT_CAME_OUT = 'opponent came out';
 const GESTURE = 'gesture';
-const ROUND_RESULT = 'round result';
+const RESULT_OF_ROUND = 'round result';
 const CONNECTION = 'connection';
 const DISCONNECT = 'disconnect';
 
@@ -100,25 +100,42 @@ function opponentCameOut(socket, roomID) {
 function handleGesture(data) {
     const socket = this;
     let gesture = data.gesture;
-    let room = rooms[socket.rooms[0]];
+    let room;
+    for (let i in socket.rooms) {
+        if (socket.rooms.hasOwnProperty(i)) {
+            if (i !== socket.id) {
+                room = rooms[i];
+                break;
+            }
+        }
+    }
     let player = room.getPlayerById(socket.id);
-
     player.gesture = gesture;
     if (checkIfBothHasChosen(room)) {
-        let anotherPlayer = room.getAnotherPlayers()[0];
+        let anotherPlayer = room.getAnotherPlayers(player)[0];
         let results = game.checkWhoWin(player.gesture, anotherPlayer.gesture).results;
         player.result = results[0];
         anotherPlayer.result = results[1];
-        socket.to(room.id).emit(ROUND_RESULT, [player, anotherPlayer]);
+        io.to(room.id).emit(RESULT_OF_ROUND, [player, anotherPlayer]);
     }
 }
 
 let checkIfBothHasChosen = room => {
     let players = room.players;
     let result = false;
-    players.forEach(player => {
-        result = !!player.gesture;
-    });
+    let count = 0;
+    for (let player in players) {
+        if (players.hasOwnProperty(player)) {
+            console.log(players[player]);
+            result = !!players[player].gesture;
+            count++;
+        }
+    }
+    console.log(result, count);
+    if (count<=1){
+        return false;
+    }
+
     return result;
 };
 
