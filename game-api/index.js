@@ -3,15 +3,30 @@ module.exports.Room = class Room {
 
     constructor(id) {
         this._id = id;
-        this._players = [];
+        this._players = {};
     }
 
     isEmpty() {
-        return !!this._players.length;
+        for (let i in this._players) {
+            if (this._players.hasOwnProperty(i)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     addPlayer(player) {
         this._players[player.id] = player;
+    }
+
+    getAnotherPlayers(player) {
+        const playerID = player.id;
+        let anotherPlayers = [];
+        for (let anotherPlayer in this._players) {
+            if (anotherPlayer.id !== playerID) {
+                anotherPlayers.push(anotherPlayer);
+            }
+        }
     }
 
     getPlayerById(id) {
@@ -24,8 +39,7 @@ module.exports.Room = class Room {
 
     deletePlayer(player) {
         let tempPlayers = this._players;
-        let id = this.getPlayerById(player.id);
-        tempPlayers = tempPlayers.slice(id, 1);
+        delete tempPlayers[player.id];
         this._changeFields({'_players': tempPlayers});
     }
 
@@ -53,14 +67,14 @@ module.exports.Game = class Game {
     }
 
     /**
-     * @return {[error, result]}
+     * @return {status, [result]}
      * status: 'OK'
      * result: win - if 1st win, equal - if 1st and 2nd are equals, lose - if 2nd win
      *
      **/
     checkWhoWin(firstGesture, secondGesture) {
         //TODO for n players
-        //TODO FIX this code
+        //TODO FIX this code with function doOppositeResult
         let result = 'lose';
         let status = "OK";
         if (firstGesture === secondGesture) {
@@ -68,7 +82,25 @@ module.exports.Game = class Game {
         } else if (this.tableOfPairs[firstGesture]["win"].indexOf(secondGesture) + 1) {
             result = 'win';
         }
-        return [status, result];
+        return {status: status, results: [result, Game.doOppositeResult(result)]};
+    }
+
+    static doOppositeResult(result) {
+        let oppositeResult;
+        switch (result) {
+            case 'lose': {
+                oppositeResult = 'win';
+                break;
+            }
+            case 'win': {
+                oppositeResult = 'lose';
+                break;
+            }
+            default: {
+                oppositeResult = 'tie';
+            }
+        }
+        return oppositeResult
     }
 };
 
@@ -76,7 +108,7 @@ module.exports.Player = class Player {
 
     constructor(name) {
         this._name = name;
-        this._win = false;
+        this._result = 'tie';
     }
 
     get gesture() {
@@ -103,11 +135,11 @@ module.exports.Player = class Player {
         this._id = value;
     }
 
-    get win() {
-        return this._win;
+    get result() {
+        return this._result;
     }
 
-    set win(value) {
-        this._win = value;
+    set result(value) {
+        this._result = value;
     }
 };
