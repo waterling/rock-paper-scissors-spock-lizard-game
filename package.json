@@ -1,0 +1,17 @@
+{
+  "name": "online-game",
+  "version": "0.0.1",
+  "description": "the online Rock-",
+  "main": "index.js",
+  "scripts": {
+    "test": "start-test"
+  },
+  "author": "Vadim Plokhotnyuk",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "express": "^4.16.3",
+    "socket.io": "^2.1.0",
+    "uuid": "^3.2.1"
+  }
+}

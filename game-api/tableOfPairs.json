@@ -1,0 +1,22 @@
+{
+  "rock": {
+    "win": ["scissors", "lizard"],
+    "lose": ["spock", "paper"]
+  },
+  "spock": {
+    "win": ["rock", "scissors"],
+    "lose": ["lizard", "paper"]
+  },
+  "paper": {
+    "win": ["rock", "spock"],
+    "lose": ["scissors", "lizard"]
+  },
+  "lizard": {
+    "win": ["paper", "spock"],
+    "lose": ["rock", "scissors"]
+  },
+  "scissors": {
+    "win": ["lizard", "paper"],
+    "lose": ["rock", "spock"]
+  }
+}
