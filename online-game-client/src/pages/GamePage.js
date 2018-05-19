@@ -5,6 +5,7 @@ import ModalName from "../components/modal-name";
 class GamePage extends React.Component {
     constructor(props) {
         super(props);
+        this.gestures = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
     }
 
 
@@ -22,7 +23,7 @@ class GamePage extends React.Component {
                             {this.props.myGesture}
                         </div>
                         <div className='text-result'>
-                            {this.props.result?
+                            {this.props.result ?
                                 <h1 className={`${this.props.result}-result`}>Result: {this.props.result}</h1>
                                 : this.props.gameMessage
                             }
@@ -33,12 +34,10 @@ class GamePage extends React.Component {
                         </div>
 
                     </div>
-                    <div className='button-panel bottom-panel'>
-                        <div className='div-button'>Rock</div>
-                        <div className='div-button'>Paper</div>
-                        <div className='div-button'>Scissors</div>
-                        <div className='div-button'>Lizard</div>
-                        <div className='div-button'>Spock</div>
+                    <div className='button-panel bottom-panel' onClick={this.props.onChooseGesture}>
+                        {this.gestures.map((gesture)=>{
+                            return <div className='div-button' data-value={gesture}>{gesture.toLocaleUpperCase()}</div>
+                        })}
                     </div>
                 </div>
                 <div className='chat'>

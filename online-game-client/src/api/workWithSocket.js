@@ -28,8 +28,10 @@ export function onStartGame(callback) {
     socket.on(ACTIONS.START_GAME, callback);
 }
 
-export function sendGesture(gesture, callback) {
+export function onGetRoundResult(callback) {
     socket.on(ACTIONS.RESULT_OF_ROUND, callback);
+}
+export function sendGesture(gesture) {
     socket.emit(ACTIONS.GESTURE, {gesture: gesture});
 }
 

@@ -15,6 +15,25 @@ module.exports.Room = class Room {
         return true;
     }
 
+    clearResultsAndGestures() {
+        for (let i in this._players) {
+            if (this._players.hasOwnProperty(i)) {
+                this._players[i].clearResult();
+                this._players[i].clearGesture();
+            }
+        }
+    }
+
+    playersToObject() {
+        let tempPlayers = {};
+        for (let playerID in this._players) {
+            if (this._players.hasOwnProperty(playerID)) {
+                tempPlayers[playerID] = this._players[playerID].toObject();
+            }
+        }
+        return tempPlayers;
+    }
+
     addPlayer(player) {
         this._players[player.id] = player;
     }
@@ -113,7 +132,7 @@ module.exports.Player = class Player {
 
     constructor(name) {
         this._name = name;
-        this._result = 'tie';
+        this._result = undefined;
     }
 
     get gesture() {
@@ -122,6 +141,13 @@ module.exports.Player = class Player {
 
     set gesture(value) {
         this._gesture = value;
+    }
+
+    clearGesture(){
+        delete this._gesture;
+    }
+    clearResult(){
+        delete this._result;
     }
 
     get name() {
@@ -146,5 +172,15 @@ module.exports.Player = class Player {
 
     set result(value) {
         this._result = value;
+    }
+
+
+    toObject() {
+        return {
+            name: this._name,
+            result: this._result,
+            id: this._id,
+            gesture: this._gesture
+        }
     }
 };

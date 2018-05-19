@@ -18,7 +18,7 @@ const GESTURE = 'gesture';
 const ROOM_IS_FULL = 'room is full';
 const ROOM_DOESNT_EXIST = 'room doesnt exist';
 const RESULT_OF_ROUND = 'round result';
-const START_GAME ='start_game';
+const START_GAME = 'start_game';
 const CONNECTION = 'connection';
 const DISCONNECT = 'disconnect';
 
@@ -41,7 +41,6 @@ io.on(CONNECTION, socket => {
     socket.on(GESTURE, handleGesture);
     socket.on(DISCONNECT, disconnect);
 });
-
 
 
 function createRoom(data) {
@@ -85,7 +84,8 @@ function connectToRoom(data) {
     socket.join(roomID);
     socket.emit(ROOM_CONNECTED, {roomID: roomID, id: socket.id});
     console.log(name + ' connected to the room ' + roomID);
-    io.to(roomID).emit(START_GAME, room.players)
+
+    io.to(roomID).emit(START_GAME, room.playersToObject())
 }
 
 function handleNonExistentRoom(socket) {
@@ -132,22 +132,23 @@ function handleGesture(data) {
     }
     let player = room.getPlayerById(socket.id);
     player.gesture = gesture;
-    if (checkIfBothHasChosen(room)) {
+    if (checkIfBothHaveChosen(room)) {
         let anotherPlayer = room.getAnotherPlayers(player)[0];
         let results = game.checkWhoWin(player.gesture, anotherPlayer.gesture).results;
         player.result = results[0];
         anotherPlayer.result = results[1];
-        io.to(room.id).emit(RESULT_OF_ROUND, [player, anotherPlayer]);
+        io.to(room.id).emit(RESULT_OF_ROUND, [player.toObject(), anotherPlayer.toObject()]);
+        room.clearResultsAndGestures();
     }
 }
 
-let checkIfBothHasChosen = room => {
+let checkIfBothHaveChosen = room => {
     let players = room.players;
-    let result = false;
+    let result = true;
     let count = 0;
     for (let player in players) {
         if (players.hasOwnProperty(player)) {
-            result = !!players[player].gesture;
+            result &= !!players[player].gesture;
             count++;
         }
     }
