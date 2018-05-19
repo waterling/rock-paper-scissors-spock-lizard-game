@@ -18,6 +18,7 @@ const GESTURE = 'gesture';
 const ROOM_IS_FULL = 'room is full';
 const ROOM_DOESNT_EXIST = 'room doesnt exist';
 const RESULT_OF_ROUND = 'round result';
+const START_GAME ='start_game';
 const CONNECTION = 'connection';
 const DISCONNECT = 'disconnect';
 
@@ -27,6 +28,8 @@ const port = process.env.PORT || config.PORT || 4001;
 const app = express();
 
 const server = http.createServer(app);
+server.listen(port, () => console.log(`Listening on port ${port}`));
+
 let rooms = {};
 
 const io = socketIo(server);
@@ -39,7 +42,6 @@ io.on(CONNECTION, socket => {
     socket.on(DISCONNECT, disconnect);
 });
 
-server.listen(port, () => console.log(`Listening on port ${port}`));
 
 
 function createRoom(data) {
@@ -81,8 +83,9 @@ function connectToRoom(data) {
     rooms[roomID] = room;
 
     socket.join(roomID);
-    socket.emit(ROOM_CONNECTED, player);
+    socket.emit(ROOM_CONNECTED, {roomID: roomID, id: socket.id});
     console.log(name + ' connected to the room ' + roomID);
+    io.to(roomID).emit(START_GAME, room.players)
 }
 
 function handleNonExistentRoom(socket) {
@@ -112,7 +115,7 @@ function disconnect() {
 }
 
 function opponentCameOut(socket, roomID) {
-    socket.to(roomID).emit(OPPONENT_CAME_OUT, {roomID: roomID});
+    io.to(roomID).emit(OPPONENT_CAME_OUT, {roomID: roomID, leavedPlayerID: socket.id});
 }
 
 function handleGesture(data) {
