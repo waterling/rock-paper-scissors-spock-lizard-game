@@ -19,6 +19,16 @@ module.exports.Room = class Room {
         this._players[player.id] = player;
     }
 
+    countOfPlayers() {
+        let count = 0;
+        for (let i in this._players) {
+            if (this._players.hasOwnProperty(i)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     getAnotherPlayers(player) {
         const playerID = player.id;
         let anotherPlayers = [];
@@ -67,12 +77,6 @@ module.exports.Game = class Game {
         this.tableOfPairs = require('./tableOfPairs');
     }
 
-    /**
-     * @return {status, [result]}
-     * status: 'OK'
-     * result: win - if 1st win, equal - if 1st and 2nd are equals, lose - if 2nd win
-     *
-     **/
     checkWhoWin(firstGesture, secondGesture) {
         //TODO for n players
         //TODO FIX this code with function doOppositeResult

@@ -1,11 +1,9 @@
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
-const axios = require("axios");
 const config = require('./config.json');
 const uuidv1 = require('uuid/v1');
 const actions = require('./actions');
-const routes = require("./routes");
 const gameApi = require("./game-api");
 const Room = gameApi.Room;
 const Player = gameApi.Player;
@@ -17,6 +15,8 @@ const ROOM_CREATED = 'room created';
 const ROOM_CONNECTED = 'connected to the room';
 const OPPONENT_CAME_OUT = 'opponent came out';
 const GESTURE = 'gesture';
+const ROOM_IS_FULL = 'room is full';
+const ROOM_DOESNT_EXIST = 'room doesnt exist';
 const RESULT_OF_ROUND = 'round result';
 const CONNECTION = 'connection';
 const DISCONNECT = 'disconnect';
@@ -25,7 +25,6 @@ const port = process.env.PORT || config.PORT || 4001;
 
 
 const app = express();
-app.use(routes);
 
 const server = http.createServer(app);
 let rooms = {};
@@ -66,7 +65,15 @@ function createRoom(data) {
 function connectToRoom(data) {
     const socket = this;
     let {name, roomID} = data;
-    let room = rooms[roomID]; //TODO add error handle if haven't room
+    let room = rooms[roomID];
+    if (!room) {
+        handleNonExistentRoom(socket);
+        return;
+    }
+    if (room.countOfPlayers() >= 2) {
+        handleFullRoom(socket);
+        return;
+    }
     let player = new Player(name);
 
     player.id = socket.id;
@@ -78,10 +85,21 @@ function connectToRoom(data) {
     console.log(name + ' connected to the room ' + roomID);
 }
 
+function handleNonExistentRoom(socket) {
+    socket.emit(ROOM_DOESNT_EXIST);
+}
+
+function handleFullRoom(socket) {
+    socket.emit(ROOM_IS_FULL);
+}
+
 function disconnect() {
-    //TODO error handle if reconnect
     const socket = this;
     const room = findRoomDisconnectedPlayer(socket.id);
+    if (!room) {
+        console.log('Client has been disconnected');
+        return;
+    }
     let player = room.getPlayerById(socket.id);
     room.deletePlayer(player);
     console.log(player.name + ' came out from room ' + room.id);
@@ -126,16 +144,13 @@ let checkIfBothHasChosen = room => {
     let count = 0;
     for (let player in players) {
         if (players.hasOwnProperty(player)) {
-            console.log(players[player]);
             result = !!players[player].gesture;
             count++;
         }
     }
-    console.log(result, count);
-    if (count<=1){
+    if (count <= 1) {
         return false;
     }
-
     return result;
 };
 
