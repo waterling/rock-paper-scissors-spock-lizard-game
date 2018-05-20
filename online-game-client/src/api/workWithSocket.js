@@ -28,6 +28,13 @@ export function onStartGame(callback) {
     socket.on(ACTIONS.START_GAME, callback);
 }
 
+export function onNonexistentRoom(callback) {
+    socket.on(ACTIONS.ROOM_DOESNT_EXIST,callback)
+}
+export function onFullRoom(callback) {
+    socket.on(ACTIONS.ROOM_IS_FULL,callback)
+}
+
 export function onGetRoundResult(callback) {
     socket.on(ACTIONS.RESULT_OF_ROUND, callback);
 }

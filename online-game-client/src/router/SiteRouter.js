@@ -4,9 +4,9 @@ import WaitingPage from "../pages/WaitingPage";
 import {
     connectToRoom,
     createRoom,
-    initSocket,
+    initSocket, onFullRoom,
     onGetRoundResult,
-    onLeavePlayer,
+    onLeavePlayer, onNonexistentRoom,
     onStartGame,
     sendGesture
 } from "../api/workWithSocket";
@@ -25,37 +25,65 @@ export default class SiteRouter extends React.Component {
             haveRoom: false,
             roomID: undefined,
             gameStarted: false,
+            nonexistentRoom: false,
+            fullRoom: false,
             waitingMessage: 'Добро пожаловать',
         };
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChangeName = this.handleChangeName.bind(this);
-        this.handleLeavePlayer = this.handleLeavePlayer.bind(this);
-        this.handleChooseGesture = this.handleChooseGesture.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onChangeName = this.onChangeName.bind(this);
+        this.onLeavePlayer = this.onLeavePlayer.bind(this);
+        this.onChooseGesture = this.onChooseGesture.bind(this);
         this.onRoomCreated = this.onRoomCreated.bind(this);
         this.onRoomConnected = this.onRoomConnected.bind(this);
+        this.clearFieldsAndAddMyGesture = this.clearFieldsAndAddMyGesture.bind(this);
         this.startGame = this.startGame.bind(this);
         this.onGetResult = this.onGetResult.bind(this);
+        this.onNonexistentRoom = this.onNonexistentRoom.bind(this);
+        this.onFullRoom = this.onFullRoom.bind(this);
     }
 
-    handleChangeName(event) {
+    onChangeName(event) {
         this.setState({
             name: event.target.value,
         })
     }
 
-    handleChooseGesture(event) {
-        sendGesture(event.target.getAttribute('data-value'));
+    onChooseGesture(event) {
+        let chosenGesture = event.target.getAttribute('data-value');
+        sendGesture(chosenGesture);
+        this.clearFieldsAndAddMyGesture(chosenGesture);
+    }
+
+
+    clearFieldsAndAddMyGesture(gesture) {
+        let tempPlayers = this.state.players;
+        for (let i in tempPlayers) {
+            if (tempPlayers.hasOwnProperty(i)) {
+                delete tempPlayers[i].gesture;
+                delete tempPlayers[i].result;
+            }
+        }
+        tempPlayers[this.state.playerID].gesture = gesture;
+        this.setState({players: tempPlayers});
     }
 
     onGetResult(data) {
+        this.setState((prevState, props) => {
+            let tempPlayers = {};
+            tempPlayers[data[0].id] = data[0];
+            tempPlayers[data[1].id] = data[1];
+            return {players: tempPlayers};
+        });
         console.log(data);
+        setTimeout(this.clearFieldsAndAddMyGesture, 1000, undefined)
     }
 
     onRoomCreated(data) {
         this.setState({
             inviteLink: `http://${CONFIG.HOST}:${CONFIG.CLIENT_PORT}/?room=${data.roomID}`,
             roomID: data.roomID,
-            playerID: data.id
+            playerID: data.id,
+            haveRoom: true,
         });
         onStartGame(this.startGame);
         onGetRoundResult(this.onGetResult);
@@ -65,8 +93,10 @@ export default class SiteRouter extends React.Component {
         this.setState({
             inviteLink: `http://${CONFIG.HOST}:${CONFIG.CLIENT_PORT}/?room=${data.roomID}`,
             roomID: data.roomID,
-            playerID: data.id
+            playerID: data.id,
+            haveRoom: true,
         });
+
         onStartGame(this.startGame);
         onGetRoundResult(this.onGetResult)
     }
@@ -78,11 +108,23 @@ export default class SiteRouter extends React.Component {
     }
 
 
-    handleNonexistentPage() {
+    onNonexistentRoom() {
+        this.setState({
+            wait: false,
+            nonexistentRoom: true,
+            roomID: undefined,
+        });
+        console.log("doesn't exist");
         //TODO handle page doesnt exist
     }
 
-    handleLeavePlayer(data) {
+    onFullRoom() {
+        this.setState({fullRoom: true});
+        console.log('full room');
+        //TODO full room
+    }
+
+    onLeavePlayer(data) {
         this.setState((prevState, props) => {
             let tempPlayers = prevState.players;
             delete tempPlayers[data.leavedPlayerID];
@@ -94,10 +136,11 @@ export default class SiteRouter extends React.Component {
         })
     }
 
-    handleSubmit(event) {
+    onSubmit(event) {
         this.setState((prevState, props) => {
             return ({
-                name: prevState.name,
+                fullRoom: false,
+                nonexistentRoom: false,
                 wait: true,
             })
         });
@@ -106,29 +149,33 @@ export default class SiteRouter extends React.Component {
 
     componentDidMount() {
         initSocket(this.state.endpoint);
-        onLeavePlayer(this.handleLeavePlayer);
+        const regexp = /room=([^&]+)/i;
+        let roomID = undefined;
+        if(!!regexp.exec(window.location.search)){
+            roomID = regexp.exec(window.location.search)[1];
+        }
+        this.setState({roomID: roomID});
+        onLeavePlayer(this.onLeavePlayer);
     }
 
     componentDidUpdate() {
         if (this.state.wait && !this.state.haveRoom) {
-            const regexp = /room=([^&]+)/i;
-            let roomID = '';
-            if (!!regexp.exec(window.location.search)) {
-                roomID = regexp.exec(window.location.search)[1];
-                connectToRoom(this.state.name, roomID, this.onRoomConnected);
+            if (this.state.roomID) {
+                connectToRoom(this.state.name, this.state.roomID, this.onRoomConnected);
+                onNonexistentRoom(this.onNonexistentRoom);
+                onFullRoom(this.onFullRoom);
             } else {
                 createRoom(this.state.name, this.onRoomCreated);
             }
-            this.setState((prevState, props) => ({haveRoom: true}));
         }
     }
 
 
-    static getOpponentName(playerId, players) {
+    static getOpponent(playerId, players) {
         for (let i in players) {
             if (players.hasOwnProperty(i)) {
                 if (i !== playerId) {
-                    return players[i].name;
+                    return players[i];
                 }
             }
         }
@@ -140,21 +187,25 @@ export default class SiteRouter extends React.Component {
                 <div className='router'>
                     <Route exact path="/" render={(match) => {
                         return (
-                            <WaitingPage
-                                wait={this.state.wait}
-                                name={this.state.name}
-                                onSubmit={this.handleSubmit}
-                                onChange={this.handleChangeName}
-                                waitingMessage={this.state.waitingMessage}
-                                inviteLink={this.state.inviteLink}
-                            />
+                            this.state.gameStarted ? <Redirect to={'/game'}/> :
+                                <WaitingPage
+                                    wait={this.state.wait}
+                                    fullRoom={this.state.fullRoom}
+                                    nonexistentRoom={this.state.nonexistentRoom}
+                                    name={this.state.name}
+                                    onSubmit={this.onSubmit}
+                                    onChange={this.onChangeName}
+                                    waitingMessage={this.state.waitingMessage}
+                                    inviteLink={this.state.inviteLink}
+                                />
                         )
                     }}/>
                     <Route path='/game' render={(match) => {
                         return (this.state.gameStarted ?
                                 <GamePage
-                                    opponentName={SiteRouter.getOpponentName(this.state.playerID, this.state.players)}
-                                    onChooseGesture={this.handleChooseGesture}
+                                    opponent={SiteRouter.getOpponent(this.state.playerID, this.state.players)}
+                                    me={this.state.players[this.state.playerID]}
+                                    onChooseGesture={this.onChooseGesture}
                                 />
                                 :
                                 <Redirect to={'/'}/>
@@ -164,7 +215,6 @@ export default class SiteRouter extends React.Component {
                             />*/
                         )
                     }}/>
-                    {this.state.gameStarted ? <Redirect to={'/game'}/> : ''}
                 </div>
             </Router>
         )

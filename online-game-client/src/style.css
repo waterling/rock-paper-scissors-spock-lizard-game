@@ -99,6 +99,7 @@ body, html {
 .gesture-selected {
     flex-grow: 2;
     background: #222222;
+    color: white;
 }
 
 .button-panel {

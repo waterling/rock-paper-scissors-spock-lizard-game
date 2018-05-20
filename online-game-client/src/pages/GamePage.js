@@ -1,5 +1,4 @@
 import React from "react";
-import ModalName from "../components/modal-name";
 
 
 class GamePage extends React.Component {
@@ -10,32 +9,34 @@ class GamePage extends React.Component {
 
 
     render() {
+        let result = this.props.me ? this.props.me.result : undefined;
+        console.log(this.props);
         return (
             <div className='game-page'>
                 <div className='game-board'>
                     <div className='opponent-info'>
                         <span className='opponent-name'>
-                            {this.props.opponentName}
+                            {this.props.opponent ? 'Opponent name: ' + this.props.opponent.name : "Opponent hasn't name"}
                         </span>
                     </div>
                     <div className='result'>
                         <div className='gesture-selected'>
-                            {this.props.myGesture}
+                            {this.props.me ? this.props.me.gesture : ''}
                         </div>
                         <div className='text-result'>
-                            {this.props.result ?
-                                <h1 className={`${this.props.result}-result`}>Result: {this.props.result}</h1>
+                            {result ?
+                                <h1 className={`${result}-result`}>Result: {result}</h1>
                                 : this.props.gameMessage
                             }
 
                         </div>
                         <div className='gesture-selected'>
-                            {this.props.opponentGesture}
+                            {this.props.opponent ? this.props.opponent.gesture : ''}
                         </div>
 
                     </div>
                     <div className='button-panel bottom-panel' onClick={this.props.onChooseGesture}>
-                        {this.gestures.map((gesture)=>{
+                        {this.gestures.map((gesture) => {
                             return <div className='div-button' data-value={gesture}>{gesture.toLocaleUpperCase()}</div>
                         })}
                     </div>

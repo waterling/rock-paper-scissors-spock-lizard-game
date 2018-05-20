@@ -21,9 +21,9 @@ const RESULT_OF_ROUND = 'round result';
 const START_GAME = 'start_game';
 const CONNECTION = 'connection';
 const DISCONNECT = 'disconnect';
+const OPPONENT_CHOOSE_GESTURE = 'opponent choose gesture';
 
 const port = process.env.PORT || config.PORT || 4001;
-
 
 const app = express();
 
@@ -132,6 +132,7 @@ function handleGesture(data) {
     }
     let player = room.getPlayerById(socket.id);
     player.gesture = gesture;
+    sendOpponentChooseGesture(room);
     if (checkIfBothHaveChosen(room)) {
         let anotherPlayer = room.getAnotherPlayers(player)[0];
         let results = game.checkWhoWin(player.gesture, anotherPlayer.gesture).results;
@@ -140,6 +141,10 @@ function handleGesture(data) {
         io.to(room.id).emit(RESULT_OF_ROUND, [player.toObject(), anotherPlayer.toObject()]);
         room.clearResultsAndGestures();
     }
+}
+
+function sendOpponentChooseGesture(room) {
+    io.to(room.id).emit(OPPONENT_CHOOSE_GESTURE);
 }
 
 let checkIfBothHaveChosen = room => {
