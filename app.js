@@ -206,6 +206,18 @@ let findRoomDisconnectedPlayer = (id) => {
 // data: {roomID, userID, userName, message, time}
 
 function sendMessage(data) {
+    console.log('send message', data);
     const socket = this;
     io.to(data.roomID).emit(SEND_MESSAGE, data);
 }
+
+
+
+
+
+
+
+
+
+
+

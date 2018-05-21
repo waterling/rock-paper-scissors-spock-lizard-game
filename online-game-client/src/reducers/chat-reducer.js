@@ -2,26 +2,32 @@ import * as types from '../actions/actions-type';
 
 
 const initialState = {
-    messages: []
+    messages: [],
 };
 
 
 const chatReducer = function (state = initialState, action) {
-    switch (action.type){
-        case types.RECEIVE_MESSAGE:{
-            let tempMessages=[];
+    switch (action.type) {
+        case types.RECEIVE_MESSAGE: {
+            let tempMessages = Array.from(state.messages);
             tempMessages.push({
                 userName: action.userName,
                 userID: action.userID,
                 time: action.time,
                 message: action.message,
             });
-            return Object.assign(
-                {},
-                state,
-                {
-                    messages: tempMessages,
-                });
+            return {
+                ...state,
+                messages: tempMessages
+            };
+        }
+
+        case types.CLEAR_MESSAGES: {
+            console.log('clear');
+            return {
+                ...state,
+                messages: [],
+            };
         }
 
         default:

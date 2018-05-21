@@ -1,19 +1,37 @@
 import React from "react";
 import {connect} from "react-redux";
-import {gameApi} from "../api";
+import {gameApi, chatApi} from "../api";
 
 
 class GamePage extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            message: ''
+        };
         this.gestures = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
+        this.onSend = this.onSend.bind(this);
+        this.onChangeMessage = this.onChangeMessage.bind(this);
     }
 
 
     onChooseGesture(event) {
         let chosenGesture = event.target.getAttribute('data-value');
-        console.log(chosenGesture);
         gameApi.sendGesture(chosenGesture);
+    }
+
+    onChangeMessage(event) {
+        this.setState({message: event.target.value})
+    }
+
+    onSend() {
+        chatApi.sendMessage({
+            message: this.state.message,
+            roomID: this.props.roomID,
+            userID: this.props.userID,
+            userName: this.props.players?this.props.players['currentPlayer'].name:'',
+            time: +(new Date()),
+        })
     }
 
 
@@ -49,7 +67,7 @@ class GamePage extends React.Component {
                     </div>
                     <div className='button-panel bottom-panel' onClick={this.onChooseGesture}>
                         {this.gestures.map((gesture) => {
-                            return <div className='div-button' >
+                            return <div className='div-button'>
                                 <img src={`/img/gestures/${gesture.toLowerCase()}.png`}
                                      alt={gesture.toLocaleUpperCase()}
                                      data-value={gesture}
@@ -63,7 +81,15 @@ class GamePage extends React.Component {
                         Video chat
                     </div>
                     <div className='text-chat'>
-                        Text chat
+                        <ul>
+                            {this.props.messages.map(item => {
+                                return <li>{item.message}</li>
+                            })}
+                        </ul>
+                        <input type='text' className='modal-input'
+                               placeholder='Enter message' value={this.props.value}
+                               onChange={this.onChangeMessage}/>
+                        <input type="submit" value="send" onClick={this.onSend}/>
                     </div>
                 </div>
             </div>
@@ -73,10 +99,11 @@ class GamePage extends React.Component {
 
 const mapStateToProps = function (store) {
     return {
+        roomID: store.roomState.roomID,
+        userID: store.roomState.userID,
         players: store.gameState.players,
         myGesture: store.gameState.myGesture,
-
-
+        messages: store.chatState.messages,
     };
 };
 

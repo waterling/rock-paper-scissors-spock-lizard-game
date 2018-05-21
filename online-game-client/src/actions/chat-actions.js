@@ -10,3 +10,10 @@ export function receiveMessage(data) {
         userName: data.userName,
     }
 }
+
+
+export function clearMessages() {
+    return {
+        type: types.CLEAR_MESSAGES,
+    }
+}

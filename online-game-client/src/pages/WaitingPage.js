@@ -1,5 +1,5 @@
 import React from "react";
-import {roomApi} from "../api";
+import {roomApi, chatApi} from "../api";
 import {connect} from 'react-redux';
 import ModalName from "../components/modal-name";
 import {Redirect} from "react-router-dom";
@@ -18,7 +18,8 @@ class WaitingPage extends React.Component {
     }
 
     componentDidMount() {
-
+        //TODO room include game and chat
+        chatApi.initChat();
     }
 
     componentWillUpdate() {
@@ -89,7 +90,7 @@ class WaitingPage extends React.Component {
 
                 {//TODO try to remove this
                     this.props.inviteID && this.props.nonexistentRoom ?
-                    <Redirect to={'/'}/> : ''}
+                        <Redirect to={'/'}/> : ''}
             </div>
         );
     }

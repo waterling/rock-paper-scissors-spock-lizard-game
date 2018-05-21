@@ -36,3 +36,5 @@ export const PLAYER_LEAVE = 'PLAYER_LEAVE';
 export const RECEIVE_MESSAGE ='RECEIVE_MESSAGE';
 
 export const SEND_MESSAGE ='SEND_MESSAGE';
+
+export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
