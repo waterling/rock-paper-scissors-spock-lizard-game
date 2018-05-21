@@ -1,3 +1,10 @@
+
+
+/****************
+ *              *
+ *  Input Name  *
+ *              *
+ ****************/
 .modal {
     display: flex;
     justify-content: center;
@@ -7,8 +14,72 @@
     width: 300px;
     height: 150px;
     background: cornflowerblue;
+    margin:15px;
     opacity: 0.7;
 }
+
+.modal-input {
+    border: none;
+    width: 75%;
+    padding: 10px;
+    float: left;
+    font-size: 16px;
+}
+.modal-input:focus{
+    outline-color: red;
+}
+.modal-button {
+    border: none;
+    margin-top: 15px;
+    padding: 10px;
+    width: 25%;
+    background: #d9d9d9;
+    color: #555;
+    float: left;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.modal-button:hover {
+    background-color: #bbb;
+}
+
+.modal-button:focus {
+    outline-color : red;
+}
+.modal-message {
+    margin-bottom: 15px;
+    color:#111111;
+    font-family: Sans-Serif;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+
+.message {
+    font-family: Sans-Serif;
+    font-weight: bold;
+    font-size: 70px;
+    margin: 15px;
+}
+.welcome {
+    opacity: 0.7;
+}
+.welcome-window {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+
+    color: cornflowerblue;
+}
+
+
+
+
 
 .waiting-page {
     display: flex;

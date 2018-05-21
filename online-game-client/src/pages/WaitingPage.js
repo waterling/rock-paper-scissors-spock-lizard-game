@@ -3,6 +3,7 @@ import {roomApi, chatApi} from "../api";
 import {connect} from 'react-redux';
 import ModalName from "../components/modal-name";
 import {Redirect} from "react-router-dom";
+import WelcomeWindow from "../components/welcome-window";
 
 
 class WaitingPage extends React.Component {
@@ -60,32 +61,17 @@ class WaitingPage extends React.Component {
         let error = (this.props.roomIsFull || this.props.nonexistentRoom);
         return (
             <div className='waiting-page'>
-                {this.state.wait || this.props.roomID
-                    ?
-                    <span>
-                        {this.state.name}
-                    </span>
-                    :
-                    <ModalName
-                        value={this.state.name}
-                        onChange={this.onChangeName}
-                        onSubmit={this.onSubmit}
-                    />
-
-                }
-                {this.props.inviteLink
-                    ?
-                    <span>Your invite link: {this.props.inviteLink}</span>
-                    :
-                    this.state.wait && error && this.state.clickCreate ?
-                        'Loading...' :
-                        ''
-                }
-
-                {error ?
-                    <input type="submit" value="Создать" onClick={this.onClickCreate}/>
-                    : ''
-                }
+                <WelcomeWindow
+                    wait={this.state.wait}
+                    roomID={this.props.roomID}
+                    name={this.state.name}
+                    clickCreate={this.state.click}
+                    onClickCreate={this.onClickCreate}
+                    inviteLink={this.props.inviteLink}
+                    error={error}
+                    onChangeName={this.onChangeName}
+                    onSubmit={this.onSubmit}
+                />
 
 
                 {//TODO try to remove this
