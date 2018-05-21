@@ -30,3 +30,9 @@ export const START_GAME = 'START_GAME';
 export const START_NEW_ROUND = 'START_NEW_ROUND';
 
 export const PLAYER_LEAVE = 'PLAYER_LEAVE';
+
+/*  CHAT ACTIONS */
+
+export const RECEIVE_MESSAGE ='RECEIVE_MESSAGE';
+
+export const SEND_MESSAGE ='SEND_MESSAGE';

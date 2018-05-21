@@ -12,6 +12,9 @@ const SocketActions = {
     DISCONNECT: 'disconnect',
     START_GAME: 'start_game',
 
+
+    SEND_MESSAGE : 'send message',
+    RECEIVE_MESSAGE : 'receive message',
 };
 
 export default SocketActions;

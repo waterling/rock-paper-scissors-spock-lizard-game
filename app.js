@@ -23,6 +23,11 @@ const CONNECTION = 'connection';
 const DISCONNECT = 'disconnect';
 const OPPONENT_CHOOSE_GESTURE = 'opponent choose gesture';
 
+
+const SEND_MESSAGE = 'send message';
+const RECEIVE_MESSAGE = 'receive message';
+
+
 const port = process.env.PORT || config.PORT || 4001;
 
 const app = express();
@@ -40,7 +45,16 @@ io.on(CONNECTION, socket => {
     socket.on(CONNECT_TO_ROOM, connectToRoom);
     socket.on(GESTURE, handleGesture);
     socket.on(DISCONNECT, disconnect);
+
+    socket.on(RECEIVE_MESSAGE, sendMessage);
 });
+
+
+/**********************
+ *                    *
+ *    ROOM ACTIONS    *
+ *                    *
+ **********************/
 
 
 function createRoom(data) {
@@ -62,7 +76,7 @@ function createRoom(data) {
     console.log(playerName + ' ' + player.id + ' connected to the room ' + roomID);
 }
 
-
+//todo separate connect and start game
 function connectToRoom(data) {
     const socket = this;
     let {name, roomID} = data;
@@ -118,6 +132,14 @@ function opponentCameOut(socket, roomID) {
     io.to(roomID).emit(OPPONENT_CAME_OUT, {roomID: roomID, leavedPlayerID: socket.id});
 }
 
+
+/**********************
+ *                    *
+ *    GAME ACTIONS    *
+ *                    *
+ **********************/
+
+//TODO  separate result and gesture
 function handleGesture(data) {
     const socket = this;
     let gesture = data.gesture;
@@ -173,3 +195,17 @@ let findRoomDisconnectedPlayer = (id) => {
         }
     }
 };
+
+/**********************
+ *                    *
+ *    CHAT ACTIONS    *
+ *                    *
+ **********************/
+
+
+// data: {roomID, userID, userName, message, time}
+
+function sendMessage(data) {
+    const socket = this;
+    io.to(data.roomID).emit(SEND_MESSAGE, data);
+}

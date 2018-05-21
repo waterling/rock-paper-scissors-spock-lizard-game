@@ -12,6 +12,7 @@ class GamePage extends React.Component {
 
     onChooseGesture(event) {
         let chosenGesture = event.target.getAttribute('data-value');
+        console.log(chosenGesture);
         gameApi.sendGesture(chosenGesture);
     }
 
@@ -48,7 +49,12 @@ class GamePage extends React.Component {
                     </div>
                     <div className='button-panel bottom-panel' onClick={this.onChooseGesture}>
                         {this.gestures.map((gesture) => {
-                            return <div className='div-button' data-value={gesture}><img src={`/img/gestures/${gesture.toLowerCase()}.png`} alt={gesture.toLocaleUpperCase()}/></div>
+                            return <div className='div-button' >
+                                <img src={`/img/gestures/${gesture.toLowerCase()}.png`}
+                                     alt={gesture.toLocaleUpperCase()}
+                                     data-value={gesture}
+                                />
+                            </div>
                         })}
                     </div>
                 </div>
