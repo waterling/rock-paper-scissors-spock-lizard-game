@@ -1,4 +1,4 @@
-const ACTIONS = {
+const SocketActions = {
     CONNECT_TO_ROOM: 'room connect',
     CREATE_ROOM: 'create room',
     ROOM_CREATED: 'room created',
@@ -14,4 +14,4 @@ const ACTIONS = {
 
 };
 
-export default ACTIONS;
+export default SocketActions;

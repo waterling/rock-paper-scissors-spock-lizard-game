@@ -1,29 +1,74 @@
 import React from "react";
+import {roomApi} from "../api";
+import {connect} from 'react-redux';
 import ModalName from "../components/modal-name";
-import {createRoom} from "../api/workWithSocket";
+import {Redirect} from "react-router-dom";
 
 
 class WaitingPage extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            wait: false,
+            name: '',
+        };
+        this.onChangeName = this.onChangeName.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onClickCreate = this.onClickCreate.bind(this);
     }
 
+    componentDidMount() {
+
+    }
+
+    componentWillUpdate() {
+        if (this.props.roomID) {
+            this.setState({
+                clickCreate: false,
+            })
+        }
+    }
+
+    onSubmit() {
+        this.setState((prevState, props) => {
+            return ({
+                wait: true,
+            })
+        });
+        if (this.props.inviteID && !this.props.nonexistentRoom) {
+            roomApi.connectToRoom(this.state.name, this.props.inviteID)
+        } else {
+            roomApi.createRoom(this.state.name);
+        }
+    }
+
+    onClickCreate() {
+        this.setState({
+            clickCreate: true,
+        });
+        roomApi.createRoom(this.state.name)
+    }
+
+    onChangeName(event) {
+        this.setState({
+            name: event.target.value,
+        })
+    }
 
     render() {
-        let error = (this.props.fullRoom || this.props.nonexistentRoom);
+        let error = (this.props.roomIsFull || this.props.nonexistentRoom);
         return (
             <div className='waiting-page'>
-                {this.props.waitingMessage}
-                {this.props.wait || error
+                {this.state.wait || this.props.roomID
                     ?
                     <span>
-                        {this.props.name}
+                        {this.state.name}
                     </span>
                     :
                     <ModalName
-                        value={this.props.name}
-                        onChange={this.props.onChange}
-                        onSubmit={this.props.onSubmit}
+                        value={this.state.name}
+                        onChange={this.onChangeName}
+                        onSubmit={this.onSubmit}
                     />
 
                 }
@@ -31,20 +76,32 @@ class WaitingPage extends React.Component {
                     ?
                     <span>Your invite link: {this.props.inviteLink}</span>
                     :
-                    this.props.wait && error ?
+                    this.state.wait && error && this.state.clickCreate ?
                         'Loading...' :
                         ''
-
                 }
 
                 {error ?
-                    <input type="submit" value="Создать" onClick={this.props.onSubmit}/>
+                    <input type="submit" value="Создать" onClick={this.onClickCreate}/>
                     : ''
                 }
+
+
+                {//TODO try to remove this
+                    this.props.inviteID && this.props.nonexistentRoom ?
+                    <Redirect to={'/'}/> : ''}
             </div>
         );
     }
 }
 
+const mapStateToProps = function (store) {
+    return {
+        roomIsFull: store.roomState.roomIsFull,
+        nonexistentRoom: store.roomState.nonexistentRoom,
+        roomID: store.roomState.roomID,
+        inviteLink: store.roomState.inviteLink,
+    };
+};
 
-export default WaitingPage;
+export default connect(mapStateToProps)(WaitingPage);

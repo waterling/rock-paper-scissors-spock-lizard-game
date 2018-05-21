@@ -1,5 +1,5 @@
 import socketIOClient from "socket.io-client";
-import ACTIONS from "./actions";
+import SocketActions from "./socket-actions";
 
 let socket;
 
@@ -9,39 +9,39 @@ export function initSocket(endpoint) {
 }
 
 export function createRoom(name, callback) {
-    socket.on(ACTIONS.ROOM_CREATED, (data) => {
+    socket.on(SocketActions.ROOM_CREATED, (data) => {
         data.id = socket.id;
         callback(data);
     });
-    socket.emit(ACTIONS.CREATE_ROOM, {name: name});
+    socket.emit(SocketActions.CREATE_ROOM, {name: name});
 
     console.log('create room');
 }
 
 export function connectToRoom(name, roomID, callback) {
-    socket.on(ACTIONS.ROOM_CONNECTED, callback);
-    socket.emit(ACTIONS.CONNECT_TO_ROOM, {name: name, roomID: roomID});
+    socket.on(SocketActions.ROOM_CONNECTED, callback);
+    socket.emit(SocketActions.CONNECT_TO_ROOM, {name: name, roomID: roomID});
     console.log('connect room');
 }
 
 export function onStartGame(callback) {
-    socket.on(ACTIONS.START_GAME, callback);
+    socket.on(SocketActions.START_GAME, callback);
 }
 
 export function onNonexistentRoom(callback) {
-    socket.on(ACTIONS.ROOM_DOESNT_EXIST,callback)
+    socket.on(SocketActions.ROOM_DOESNT_EXIST,callback)
 }
 export function onFullRoom(callback) {
-    socket.on(ACTIONS.ROOM_IS_FULL,callback)
+    socket.on(SocketActions.ROOM_IS_FULL,callback)
 }
 
 export function onGetRoundResult(callback) {
-    socket.on(ACTIONS.RESULT_OF_ROUND, callback);
+    socket.on(SocketActions.RESULT_OF_ROUND, callback);
 }
 export function sendGesture(gesture) {
-    socket.emit(ACTIONS.GESTURE, {gesture: gesture});
+    socket.emit(SocketActions.GESTURE, {gesture: gesture});
 }
 
 export function onLeavePlayer(callback) {
-    socket.on(ACTIONS.OPPONENT_CAME_OUT, callback);
+    socket.on(SocketActions.OPPONENT_CAME_OUT, callback);
 }

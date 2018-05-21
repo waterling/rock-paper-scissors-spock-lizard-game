@@ -1,4 +1,6 @@
 import React from "react";
+import {connect} from "react-redux";
+import {gameApi} from "../api";
 
 
 class GamePage extends React.Component {
@@ -8,20 +10,29 @@ class GamePage extends React.Component {
     }
 
 
+    onChooseGesture(event) {
+        let chosenGesture = event.target.getAttribute('data-value');
+        gameApi.sendGesture(chosenGesture);
+    }
+
+
     render() {
-        let result = this.props.me ? this.props.me.result : undefined;
+        let players = this.props.players;
+        let currentPlayer = players ? players['currentPlayer'] : {};
+        let opponentPlayer = players ? players['opponentPlayer'] : {};
+        let result = currentPlayer.result;
         console.log(this.props);
         return (
             <div className='game-page'>
                 <div className='game-board'>
                     <div className='opponent-info'>
                         <span className='opponent-name'>
-                            {this.props.opponent ? 'Opponent name: ' + this.props.opponent.name : "Opponent hasn't name"}
+                            {opponentPlayer ? 'Opponent name: ' + opponentPlayer.name : "Hasn't opponent"}
                         </span>
                     </div>
                     <div className='result'>
                         <div className='gesture-selected'>
-                            {this.props.me ? this.props.me.gesture : ''}
+                            {this.props.myGesture}
                         </div>
                         <div className='text-result'>
                             {result ?
@@ -31,13 +42,13 @@ class GamePage extends React.Component {
 
                         </div>
                         <div className='gesture-selected'>
-                            {this.props.opponent ? this.props.opponent.gesture : ''}
+                            {opponentPlayer ? opponentPlayer.gesture : ''}
                         </div>
 
                     </div>
-                    <div className='button-panel bottom-panel' onClick={this.props.onChooseGesture}>
+                    <div className='button-panel bottom-panel' onClick={this.onChooseGesture}>
                         {this.gestures.map((gesture) => {
-                            return <div className='div-button' data-value={gesture}>{gesture.toLocaleUpperCase()}</div>
+                            return <div className='div-button' data-value={gesture}><img src={`/img/gestures/${gesture.toLowerCase()}.png`} alt={gesture.toLocaleUpperCase()}/></div>
                         })}
                     </div>
                 </div>
@@ -54,5 +65,13 @@ class GamePage extends React.Component {
     }
 }
 
+const mapStateToProps = function (store) {
+    return {
+        players: store.gameState.players,
+        myGesture: store.gameState.myGesture,
 
-export default GamePage;
+
+    };
+};
+
+export default connect(mapStateToProps)(GamePage);
