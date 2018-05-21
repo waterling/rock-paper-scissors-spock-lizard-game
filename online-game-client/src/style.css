@@ -72,8 +72,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: white;
-
+    background-color: #ededed;
     color: cornflowerblue;
 }
 
@@ -90,6 +89,7 @@
     margin: 0;
     padding: 0;
     height: 100%;
+    background-color: #ededed;
 }
 
 .router {
@@ -115,7 +115,7 @@ body, html {
 
 .game-page {
     height: 100%;
-    background: cornflowerblue;
+    background: #ededed;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -125,7 +125,6 @@ body, html {
 .game-board {
     height: 70%;
     width: 50%;
-    background: antiquewhite;
     margin: 10px;
     display: flex;
     flex-direction: column;
@@ -135,7 +134,7 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-grow: 1;
+    height: 10%;
 }
 
 .result {
@@ -143,12 +142,11 @@ body, html {
     justify-content: center;
     align-items: stretch;
     align-content: center;
-    flex-grow: 7;
-    background: crimson;
+    height: 70%;
 }
 
 .text-result {
-    flex-grow: 4;
+    width: 50%;
     display: flex;
     justify-content: center;
     align-content: center;
@@ -168,25 +166,39 @@ body, html {
 }
 
 .gesture-selected {
-    flex-grow: 2;
-    background: #222222;
+    width: 25%;
     color: white;
+}
+.result-img {
+    background: no-repeat center;
+    height: 100%;
 }
 
 .button-panel {
     display: flex;
-    align-items: stretch;
-    flex-grow: 2;
+    height: 35%;
 }
 
 .div-button {
-    background: forestgreen;
     margin: 1px;
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    align-items: center;
+    background-size: cover;
+    position: relative;
+    transition: transform 1s;
     cursor: pointer;
+    width: 20%;
+    min-width: 70px;
+}
+.div-button:hover {
+    transform: translateY(-30px);
+}
+.choose:hover {
+    transform: unset;
+}
+.block {
+    opacity: 0.4;
+}
+.block:hover{
+    transform: unset;
 }
 
 .chat {
@@ -204,15 +216,104 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-grow: 5;
+    height: 62.5%;
     background: crimson;
     margin-bottom: 10px
 }
 
 .text-chat {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    flex-grow: 3;
-    background: forestgreen;
+    height: 100%;
+    background: whitesmoke;
+}
+.messages {
+    width: 100%;
+    max-height: 90%;
+    flex-grow: 20;
+    overflow-y: auto;
+}
+.message-li {
+    width: 100%;
+}
+.send-form {
+    display: flex;
+    position: relative;
+    height: 5%;
+    flex-grow: 1;
+    width: 100%;
+}
+.send-input {
+    width: 90%;
+}
+.send-button {
+}
+
+.message {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.message-user-1 + .message-user-2,
+.message-user-2 + .message-user-1 {
+    margin-top: 1em;
+}
+.message-user-1 + .message-user-1,
+.message-user-2 + .message-user-2 {
+    margin-top: .5em;
+}
+.message-time {
+    font-size: 10px;
+    color: #ccc;
+    width: 100%;
+    margin: 0 0 5px 5px;
+}
+
+.message-text {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #69b4f3;
+    background-color: #bfe2ff;
+    max-width: 70%;
+}
+
+.message-user-2 {
+    justify-content: flex-end;
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+}
+.message-user-2 .message-time {
+    text-align: right;
+    margin: 0 5px 5px 0;
+}
+.message-user-2 .message-text {
+    background-color: #69b4f3;
+}
+
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: rgba(0,0,0,0.1);
+    border: 1px solid #ccc;
+}
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: linear-gradient(left, #fff, #e4e4e4);
+    border: 1px solid #aaa;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #fff;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(left, #22ADD4, #1E98BA);
 }

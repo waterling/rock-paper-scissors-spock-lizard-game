@@ -1,6 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {gameApi, chatApi} from "../api";
+import TextChat from "../components/text-chat";
 
 
 class GamePage extends React.Component {
@@ -12,11 +13,26 @@ class GamePage extends React.Component {
         this.gestures = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
         this.onSend = this.onSend.bind(this);
         this.onChangeMessage = this.onChangeMessage.bind(this);
+        this.onChooseGesture = this.onChooseGesture.bind(this);
+        this.onLoadMessages = this.onLoadMessages.bind(this);
     }
 
 
     onChooseGesture(event) {
+        if (this.props.myGesture) {
+            return;
+        }
         let chosenGesture = event.target.getAttribute('data-value');
+        let buttons = event.target.parentNode.children;
+
+        for (let i = 0; i < buttons.length; i++) {
+            if (buttons[i].getAttribute('data-value') !== chosenGesture) {
+                buttons[i].classList.add('block');
+            } else {
+                buttons[i].classList.add('choose');
+            }
+        }
+
         gameApi.sendGesture(chosenGesture);
     }
 
@@ -24,14 +40,40 @@ class GamePage extends React.Component {
         this.setState({message: event.target.value})
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (!this.props.myGesture) {
+            let buttons = document.getElementsByClassName('button-panel')[0].children;
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('block');
+                buttons[i].classList.remove('choose');
+            }
+        }
+        if (prevProps.messages.length !== this.props.messages.length) {
+            this.onLoadMessages();
+        }
+    }
+
+    onLoadMessages() {
+        let messages = document.getElementsByClassName('messages')[0];
+        if (messages) {
+            messages.scrollTop = messages.scrollHeight;
+        }
+    }
+
     onSend() {
+        if (!this.state.message.length) {
+            return;
+        }
         chatApi.sendMessage({
             message: this.state.message,
             roomID: this.props.roomID,
             userID: this.props.userID,
-            userName: this.props.players?this.props.players['currentPlayer'].name:'',
+            userName: this.props.players ? this.props.players['currentPlayer'].name : '',
             time: +(new Date()),
-        })
+        });
+        this.setState({
+            message: '',
+        });
     }
 
 
@@ -40,7 +82,6 @@ class GamePage extends React.Component {
         let currentPlayer = players ? players['currentPlayer'] : {};
         let opponentPlayer = players ? players['opponentPlayer'] : {};
         let result = currentPlayer.result;
-        console.log(this.props);
         return (
             <div className='game-page'>
                 <div className='game-board'>
@@ -51,7 +92,16 @@ class GamePage extends React.Component {
                     </div>
                     <div className='result'>
                         <div className='gesture-selected'>
-                            {this.props.myGesture}
+                            {this.props.myGesture ?
+                                <div className={'result-img'}
+                                     style={
+                                         {
+                                             backgroundSize: '100% auto',
+                                             backgroundImage:
+                                                 `url(/img/gestures/${this.props.myGesture.toLowerCase()}-big.png)`,
+                                         }}>
+                                </div>
+                                : ''}
                         </div>
                         <div className='text-result'>
                             {result ?
@@ -61,36 +111,44 @@ class GamePage extends React.Component {
 
                         </div>
                         <div className='gesture-selected'>
-                            {opponentPlayer ? opponentPlayer.gesture : ''}
+                            {opponentPlayer.gesture ?
+                                <div className={'result-img'}
+                                     style={
+                                         {
+                                             backgroundSize: '100% auto',
+                                             backgroundImage:
+                                                 `url(/img/gestures/${opponentPlayer.gesture.toLowerCase()}-big.png)`,
+
+                                         }}>
+                                </div>
+                                : ''}
                         </div>
 
                     </div>
                     <div className='button-panel bottom-panel' onClick={this.onChooseGesture}>
                         {this.gestures.map((gesture) => {
-                            return <div className='div-button'>
-                                <img src={`/img/gestures/${gesture.toLowerCase()}.png`}
-                                     alt={gesture.toLocaleUpperCase()}
-                                     data-value={gesture}
-                                />
-                            </div>
+                            return (
+                                <div className='div-button'
+                                     key={gesture}
+                                     style={
+                                         {
+                                             backgroundImage:
+                                                 `url(/img/gestures/${gesture.toLowerCase()}.png)`,
+                                         }}
+                                     data-value={gesture}>
+                                </div>
+                            )
                         })}
                     </div>
                 </div>
                 <div className='chat'>
-                    <div className='video-chat'>
-                        Video chat
-                    </div>
-                    <div className='text-chat'>
-                        <ul>
-                            {this.props.messages.map(item => {
-                                return <li>{item.message}</li>
-                            })}
-                        </ul>
-                        <input type='text' className='modal-input'
-                               placeholder='Enter message' value={this.props.value}
-                               onChange={this.onChangeMessage}/>
-                        <input type="submit" value="send" onClick={this.onSend}/>
-                    </div>
+                    <TextChat
+                        userID={this.props.userID}
+                        messages={this.props.messages}
+                        message={this.state.message}
+                        onSend={this.onSend}
+                        onChangeMessage={this.onChangeMessage}
+                    />
                 </div>
             </div>
         );
