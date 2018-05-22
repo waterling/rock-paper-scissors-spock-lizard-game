@@ -10,13 +10,13 @@ class ChatApi {
         this.initChat();
 
     }
-
+    //инициализация чата
     initChat(){
         store.dispatch(
             Chat.clearMessages()
         );
     }
-
+    //подписываемся на получене сообщений
     receiveMessage() {
         this.socket.on(SocketActions.SEND_MESSAGE, (data) => {
             console.log(data, 'receive message');
@@ -25,7 +25,7 @@ class ChatApi {
             );
         })
     }
-
+    //отправляем сообщения
     sendMessage(data) {
         console.log(data, 'send message');
         this.socket.emit(SocketActions.RECEIVE_MESSAGE, data);

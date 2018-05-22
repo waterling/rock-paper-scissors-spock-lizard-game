@@ -25,6 +25,7 @@ class GamePage extends React.Component {
     }
 
 
+    //метод срабатывает, когда выбирается один из жестов
     onChooseGesture(event) {
         if (this.props.myGesture) {
             return;
@@ -34,20 +35,23 @@ class GamePage extends React.Component {
 
         for (let i = 0; i < buttons.length; i++) {
             if (buttons[i].getAttribute('data-value') !== chosenGesture) {
+                //блокирует все конпки
                 buttons[i].classList.add('block');
             } else {
+                //выделяется единственная выбранная
                 buttons[i].classList.add('choose');
             }
         }
-
+        //отправляет выбранный жест
         gameApi.sendGesture(chosenGesture);
     }
-
+    //реагирует на изменение имени
     onChangeMessage(event) {
         this.setState({message: event.target.value})
     }
 
     componentDidUpdate(prevProps, prevState) {
+        //если жеста уже нет, то он снимает блок
         if (!this.props.myGesture) {
             let buttons = document.getElementsByClassName('button-panel')[0].children;
             for (let i = 0; i < buttons.length; i++) {
@@ -55,29 +59,36 @@ class GamePage extends React.Component {
                 buttons[i].classList.remove('choose');
             }
         }
+        //делает прокрутку чата вниз, если было добавленно сообщение
         if (prevProps.messages.length !== this.props.messages.length) {
             this.onLoadMessages();
         }
+        //перед отключением обрывает соединения
         window.onbeforeunload = this.hangUp;
+        //работа со звуком при вызове, сбрасывании
         if (this.props.videoIsStarted) {
+            //работает у человека, который звонит
             this.playAudio("/sound/callToUser.mp3");
             document.getElementById('localVideo').srcObject = this.props.localStream;
             document.getElementById('remoteVideo').srcObject = this.props.remoteStream;
         } else if (this.props.videoOffer) {
+            //работает у человека, которому звонит
             this.playAudio("/sound/callFromUser.mp3")
         } else if (this.audio) {
+            //останавливает, если сбросили или вышел игрок из игры
             this.stopAudio();
         }
     }
-
+    //прокрутка чата вниз
     onLoadMessages() {
         let messages = document.getElementsByClassName('messages')[0];
         if (messages) {
             messages.scrollTop = messages.scrollHeight;
         }
     }
-
+    //отправка нового сообщения
     onSend() {
+        //проверка на пустое
         if (!this.state.message.length) {
             return;
         }
@@ -88,33 +99,34 @@ class GamePage extends React.Component {
             userName: this.props.players ? this.props.players['currentPlayer'].name : '',
             time: +(new Date()),
         });
+        //обнуляет поле для ввода
         this.setState({
             message: '',
         });
     }
-
+    //вызывает пользователя, когда нажимает соответствующую кнопку
     callUser() {
         videoApi.callUser();
     }
-
+    //принимает вызов пользователя
     getCallFromUser() {
         if (this.props.videoOffer) {
             videoApi.getCallFromUser();
         }
     }
-
+    //сбрасывает звонок или заканчивает разговор
     hangUp() {
         videoApi.hangup();
         this.stopAudio();
     }
-
+    //вопроизводит музыку, когда идет работа с вызовами
     playAudio(path) {
         this.audio = new Audio;
         this.audio.src = path;
         this.audio.loop = true;
         this.audio.play();
     }
-
+    //останавливает музыку, если сбросили
     stopAudio() {
         let path = "/sound/endOfCall.mp3";
         if (this.audio.src !== path) {
@@ -133,7 +145,7 @@ class GamePage extends React.Component {
 
     render() {
         let players = this.props.players;
-
+        //определяем какие кнопки будем в какой момент показывать
         let disabledCall = this.props.videoOffer || this.props.isVideoInitiator || this.props.videoIsStarted;
         let disabledAnswer = !this.props.videoOffer;
         let disabledHangup = !(this.props.videoOffer || this.props.videoIsStarted);
@@ -173,17 +185,17 @@ class GamePage extends React.Component {
 
 const mapStateToProps = function (store) {
     return {
-        roomID: store.roomState.roomID,
-        userID: store.roomState.userID,
-        players: store.gameState.players,
-        myGesture: store.gameState.myGesture,
-        opponentChooseGesture: store.gameState.opponentChooseGesture,
-        messages: store.chatState.messages,
-        videoIsStarted: store.videoState.isStarted,
-        isVideoInitiator: store.videoState.isInitiator,
-        videoOffer: store.videoState.offer,
-        localStream: store.videoState.localStream,
-        remoteStream: store.videoState.remoteStream,
+        roomID: store.roomState.roomID, // ид комнаты
+        userID: store.roomState.userID, // ид текущего пользователя
+        players: store.gameState.players, // все игроки комнаты
+        myGesture: store.gameState.myGesture, // жест, выбранный текущим пользователем
+        opponentChooseGesture: store.gameState.opponentChooseGesture, // оповещение о том, что оппонент сделал выбор
+        messages: store.chatState.messages, // все сообщения
+        videoIsStarted: store.videoState.isStarted, // началась ли трансляция хотя бы на одной из сторон
+        isVideoInitiator: store.videoState.isInitiator, // показывает, кто звонил
+        videoOffer: store.videoState.offer, // показывает, кому звонили
+        localStream: store.videoState.localStream, // стрим на текущей стороне
+        remoteStream: store.videoState.remoteStream, // стрим другого пользователя
     };
 };
 

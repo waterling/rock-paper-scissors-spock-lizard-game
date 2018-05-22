@@ -10,8 +10,8 @@ class WaitingPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            wait: false,
-            name: '',
+            wait: false, // ожидает ли игрок оппонента
+            name: '', // имя текущего игрока
         };
         this.onChangeName = this.onChangeName.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -21,7 +21,7 @@ class WaitingPage extends React.Component {
     componentDidMount() {
         chatApi.initChat();
     }
-
+    //если проблемы с комнатой, то мы ждем пока, создается новая
     componentWillUpdate() {
         if (this.props.roomID) {
             this.setState({
@@ -29,7 +29,7 @@ class WaitingPage extends React.Component {
             })
         }
     }
-
+    //создает или подключается к комнате после ввода имени
     onSubmit() {
         this.setState((prevState, props) => {
             return ({
@@ -42,14 +42,14 @@ class WaitingPage extends React.Component {
             roomApi.createRoom(this.state.name);
         }
     }
-
+    // при проблеме с комнатой создает ее
     onClickCreate() {
         this.setState({
             clickCreate: true,
         });
         roomApi.createRoom(this.state.name)
     }
-
+    //изменение имени при ввода
     onChangeName(event) {
         this.setState({
             name: event.target.value,
@@ -73,8 +73,7 @@ class WaitingPage extends React.Component {
                 />
 
 
-                {//TODO try to remove this
-                    this.props.inviteID && this.props.nonexistentRoom ?
+                {this.props.inviteID && this.props.nonexistentRoom ?
                         <Redirect to={'/'}/> : ''}
             </div>
         );
@@ -83,10 +82,10 @@ class WaitingPage extends React.Component {
 
 const mapStateToProps = function (store) {
     return {
-        roomIsFull: store.roomState.roomIsFull,
-        nonexistentRoom: store.roomState.nonexistentRoom,
-        roomID: store.roomState.roomID,
-        inviteLink: store.roomState.inviteLink,
+        roomIsFull: store.roomState.roomIsFull, // если комната полная
+        nonexistentRoom: store.roomState.nonexistentRoom, // если комната уже не существует
+        roomID: store.roomState.roomID, // ид комнаты
+        inviteLink: store.roomState.inviteLink, // ссылка для приглашения
     };
 };
 

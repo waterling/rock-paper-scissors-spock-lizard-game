@@ -34,7 +34,7 @@ class SiteRouter extends React.Component {
 
 const mapStateToProps = function (store) {
     return {
-        gameStarted: store.gameState.gameStarted,
+        gameStarted: store.gameState.gameStarted, //началась ли игра (нужно, чтобы перенаправлять со страницы на страницу)
     };
 };
 

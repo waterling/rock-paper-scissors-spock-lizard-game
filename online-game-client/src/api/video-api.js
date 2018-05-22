@@ -32,22 +32,24 @@ class VideoApi {
         this.handleMessage = this.handleMessage.bind(this);
         this.init();
     }
-
+    //подписываемся на сообщения для видео
     init() {
         this.socket.on('message-video', this.handleMessage);
     }
-
+    //отправляем сообщения для видео
     sendMessage(message) {
         this.socket.emit('message-video', message);
     }
-
+    // обрабатываем полученные сообщения
     handleMessage(message) {
+        //для того, кому звонят
         if (message.type === 'offer') {
             this.offer = true;
             this.offerMessage = message;
             store.dispatch(
                 VideoChat.getPhoneCall({offer: this.offer})
             );
+            //для того, кто звонил и кому ответили
         } else if (message.type === 'answer' && this.pc) {
             this.pc.setRemoteDescription(new RTCSessionDescription(message));
         } else if (message.type === 'candidate' && this.isStarted && this.pc) {
@@ -56,11 +58,12 @@ class VideoApi {
                 candidate: message.candidate
             });
             this.pc.addIceCandidate(candidate);
+            //для отключения потоков при выходе пользователя
         } else if (message.type === 'bye') {
             this.handleRemoteHangup();
         }
     }
-
+    //звонок игроку
     callUser() {
         this.isInitiator = true;
         navigator.mediaDevices.getUserMedia({
@@ -72,7 +75,7 @@ class VideoApi {
                 console.log('getUserMedia() error: ' + e.name);
             });
     }
-
+    //принимаем звонок от другого игрока
     getCallFromUser() {
         navigator.mediaDevices.getUserMedia({
             audio: true,
@@ -85,7 +88,7 @@ class VideoApi {
             });
 
     }
-
+    //запуская локальный стрим
     gotStream(stream) {
         this.localStream = stream;
         if (this.isInitiator) {
@@ -100,7 +103,7 @@ class VideoApi {
         }
     }
 
-
+    //звоним или отвечаем другому пользователю после того, как запустили свой стрим
     maybeStart() {
         if (!this.isStarted && typeof this.localStream !== 'undefined') {
             this.createPeerConnection();
@@ -115,7 +118,7 @@ class VideoApi {
             }
         }
     }
-
+    //создаем подключение
     createPeerConnection() {
         try {
             this.pc = new RTCPeerConnection(null);
@@ -145,11 +148,11 @@ class VideoApi {
     handleCreateOfferError(event) {
         console.log('createOffer() error: ', event);
     }
-
+    //делаем предложение подключиться
     doCall() {
         this.pc.createOffer(this.setLocalAndSendMessage, this.handleCreateOfferError);
     }
-
+    //отвечаем на предложением подключиться
     doAnswer() {
         this.pc.createAnswer().then(
             this.setLocalAndSendMessage
@@ -177,7 +180,7 @@ class VideoApi {
     handleRemoteStreamRemoved(event) {
         this.handleRemoteHangup();
     }
-
+    //завершаем разговор
     hangup() {
         this.stop();
         this.sendMessage({type: 'bye'});

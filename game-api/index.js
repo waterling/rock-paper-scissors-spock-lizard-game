@@ -5,7 +5,7 @@ module.exports.Room = class Room {
         this._id = id;
         this._players = {};
     }
-
+    //проверяем пустая ли комната
     isEmpty() {
         for (let i in this._players) {
             if (this._players.hasOwnProperty(i)) {
@@ -14,7 +14,7 @@ module.exports.Room = class Room {
         }
         return true;
     }
-
+    //очищаем от результатов и жестов
     clearResultsAndGestures() {
         for (let i in this._players) {
             if (this._players.hasOwnProperty(i)) {
@@ -23,7 +23,7 @@ module.exports.Room = class Room {
             }
         }
     }
-
+    //переводим игрока в более удобный вид для клиента
     playersToObject() {
         let tempPlayers = {};
         for (let playerID in this._players) {
@@ -33,11 +33,11 @@ module.exports.Room = class Room {
         }
         return tempPlayers;
     }
-
+    //добавляем игрока в комнату
     addPlayer(player) {
         this._players[player.id] = player;
     }
-
+    //считаем количество игроков в комнате
     countOfPlayers() {
         let count = 0;
         for (let i in this._players) {
@@ -47,7 +47,7 @@ module.exports.Room = class Room {
         }
         return count;
     }
-
+    //получаем оппонента текущего игрока
     getAnotherPlayers(player) {
         const playerID = player.id;
         let anotherPlayers = [];
@@ -58,7 +58,7 @@ module.exports.Room = class Room {
         }
         return anotherPlayers;
     }
-
+    //достаем пользователя по иду
     getPlayerById(id) {
         return this.players[id];
     }
@@ -66,13 +66,13 @@ module.exports.Room = class Room {
     get players() {
         return this._players;
     }
-
+    //удаляем пользователя из комнаты
     deletePlayer(player) {
         let tempPlayers = this._players;
         delete tempPlayers[player.id];
         this._changeFields({'_players': tempPlayers});
     }
-
+    //изменяет поля текущего класса
     _changeFields(obj) {
         for (let field in obj) {
             if (obj.hasOwnProperty(field)) {
@@ -93,9 +93,10 @@ module.exports.Room = class Room {
 
 module.exports.Game = class Game {
     constructor() {
+        //таблица с парами
         this.tableOfPairs = require('./tableOfPairs');
     }
-
+    //проверяет, кто выиграл
     checkWhoWin(firstGesture, secondGesture) {
         let result = 'lose';
         let status = "OK";
@@ -106,7 +107,7 @@ module.exports.Game = class Game {
         }
         return {status: status, results: [result, Game.doOppositeResult(result)]};
     }
-
+    // получает противоположный результат для проигравшего игрока
     static doOppositeResult(result) {
         let oppositeResult;
         switch (result) {
@@ -140,11 +141,11 @@ module.exports.Player = class Player {
     set gesture(value) {
         this._gesture = value;
     }
-
+    //удаляем жест у игрока
     clearGesture() {
         delete this._gesture;
     }
-
+    // удаляем результаты
     clearResult() {
         delete this._result;
     }
@@ -173,7 +174,7 @@ module.exports.Player = class Player {
         this._result = value;
     }
 
-
+    //перевод в удобный вид для отправки
     toObject() {
         return {
             name: this._name,
