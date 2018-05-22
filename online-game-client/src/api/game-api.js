@@ -37,6 +37,12 @@ class GameApi {
 
             setTimeout(this.startNewRound, TIMEOUT_BETWEEN_ROUNDS, players)
 
+        });
+
+        this.socket.on(SocketActions.OPPONENT_CHOOSE_GESTURE, data => {
+            store.dispatch(
+                Game.opponentChooseGesture()
+            );
         })
     }
 

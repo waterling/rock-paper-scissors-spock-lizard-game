@@ -20,6 +20,8 @@ export const START_GAME = 'START_GAME';
 
 export const START_NEW_ROUND = 'START_NEW_ROUND';
 
+export const OPPONENT_CHOOSE_GESTURE = 'opponent choose gesture';
+
 export const PLAYER_LEAVE = 'PLAYER_LEAVE';
 
 /*  CHAT ACTIONS */

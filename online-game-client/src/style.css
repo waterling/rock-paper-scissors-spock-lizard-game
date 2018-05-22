@@ -1,4 +1,55 @@
+.router {
+    height: 100%;
+}
 
+body, html {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    height: 100%;
+}
+
+/*****************
+ *               *
+ *  Welcome page *
+ *               *
+ *****************/
+
+.message {
+    font-family: Sans-Serif;
+    font-weight: bold;
+    font-size: 70px;
+    margin: 15px;
+}
+
+.welcome {
+    opacity: 0.7;
+}
+
+.welcome-window {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ededed;
+    color: cornflowerblue;
+}
+
+.waiting-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #ededed;
+}
 
 /****************
  *              *
@@ -14,7 +65,7 @@
     width: 300px;
     height: 150px;
     background: cornflowerblue;
-    margin:15px;
+    margin: 15px;
     opacity: 0.7;
 }
 
@@ -25,9 +76,11 @@
     float: left;
     font-size: 16px;
 }
-.modal-input:focus{
+
+.modal-input:focus {
     outline-color: red;
 }
+
 .modal-button {
     border: none;
     margin-top: 15px;
@@ -47,64 +100,15 @@
 }
 
 .modal-button:focus {
-    outline-color : red;
+    outline-color: red;
 }
+
 .modal-message {
     margin-bottom: 15px;
-    color:#111111;
+    color: #111111;
     font-family: Sans-Serif;
     font-weight: bold;
     font-size: 18px;
-}
-
-
-.message {
-    font-family: Sans-Serif;
-    font-weight: bold;
-    font-size: 70px;
-    margin: 15px;
-}
-.welcome {
-    opacity: 0.7;
-}
-.welcome-window {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #ededed;
-    color: cornflowerblue;
-}
-
-
-
-
-
-.waiting-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    flex-direction: column;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background-color: #ededed;
-}
-
-.router {
-    height: 100%;
-}
-
-body, html {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-#root {
-    height: 100%;
 }
 
 /**********************
@@ -153,7 +157,7 @@ body, html {
     align-items: center;
 }
 
-.tie-result{
+.tie-result {
     color: blue;
 }
 
@@ -169,6 +173,7 @@ body, html {
     width: 25%;
     color: white;
 }
+
 .result-img {
     background: no-repeat center;
     height: 100%;
@@ -181,23 +186,28 @@ body, html {
 
 .div-button {
     margin: 1px;
-    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
     position: relative;
     transition: transform 1s;
     cursor: pointer;
     width: 20%;
     min-width: 70px;
 }
+
 .div-button:hover {
     transform: translateY(-30px);
 }
+
 .choose:hover {
     transform: unset;
 }
+
 .block {
     opacity: 0.4;
 }
-.block:hover{
+
+.block:hover {
     transform: unset;
 }
 
@@ -212,6 +222,14 @@ body, html {
 
 }
 
+
+/**********************
+ *                    *
+ *      TEXT CHAT     *
+ *                    *
+ **********************/
+
+
 .text-chat {
     display: flex;
     flex-direction: column;
@@ -219,15 +237,18 @@ body, html {
     height: 100%;
     background: whitesmoke;
 }
+
 .messages {
     width: 100%;
     max-height: 90%;
     flex-grow: 20;
     overflow-y: auto;
 }
+
 .message-li {
     width: 100%;
 }
+
 .send-form {
     display: flex;
     position: relative;
@@ -235,9 +256,11 @@ body, html {
     flex-grow: 1;
     width: 100%;
 }
+
 .send-input {
     width: 90%;
 }
+
 .send-button {
     border: none;
     width: 25%;
@@ -260,14 +283,17 @@ body, html {
     flex-wrap: wrap;
     align-items: center;
 }
+
 .message-user-1 + .message-user-2,
 .message-user-2 + .message-user-1 {
     margin-top: 1em;
 }
+
 .message-user-1 + .message-user-1,
 .message-user-2 + .message-user-2 {
     margin-top: .5em;
 }
+
 .message-time {
     font-size: 10px;
     color: #ccc;
@@ -289,14 +315,21 @@ body, html {
     display: flex;
     flex-direction: column;
 }
+
 .message-user-2 .message-time {
     text-align: right;
     margin: 0 5px 5px 0;
 }
+
 .message-user-2 .message-text {
     background-color: #69b4f3;
 }
 
+/***********************
+ *                     *
+ *      VIDEO CHAT     *
+ *                     *
+ ***********************/
 .video-chat {
     display: flex;
     flex-direction: column;
@@ -305,6 +338,7 @@ body, html {
     height: 100%;
     margin-bottom: 10px
 }
+
 .videos {
     display: flex;
     flex-wrap: wrap;
@@ -313,6 +347,7 @@ body, html {
     align-content: space-around;
     align-items: center;
 }
+
 .buttons {
     display: flex;
     justify-content: center;
@@ -329,21 +364,31 @@ body, html {
     cursor: pointer;
     transition: 0.3s;
 }
+
 .buttons button:hover {
     background-color: #bbb;
 }
 
 video {
-    margin-bottom: 5px ;
+    margin-bottom: 5px;
     margin-left: 5px;
     width: 200px;
 }
 
+
+
+/**********************
+ *                    *
+ *       SCROLL       *
+ *                    *
+ **********************/
+
 ::-webkit-scrollbar-track {
     border-radius: 10px;
-    background: rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.1);
     border: 1px solid #ccc;
 }
+
 ::-webkit-scrollbar {
     width: 10px;
     background-color: #F5F5F5;

@@ -27,6 +27,11 @@ export function startNewRound(players) {
         players
     }
 }
+export function opponentChooseGesture() {
+    return {
+        type: types.OPPONENT_CHOOSE_GESTURE
+    }
+}
 
 export function leavePlayer(playerID) {
     return {

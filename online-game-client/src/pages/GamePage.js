@@ -4,6 +4,7 @@ import {gameApi, chatApi, videoApi} from "../api";
 import TextChat from "../components/text-chat";
 import GameBoard from "../components/game-board";
 import VideoChat from "../components/video-chat";
+import store from "../store";
 
 
 class GamePage extends React.Component {
@@ -141,6 +142,7 @@ class GamePage extends React.Component {
                     onChooseGesture={this.onChooseGesture}
                     gestures={this.gestures}
                     myGesture={this.props.myGesture}
+                    opponentChooseGesture={this.props.opponentChooseGesture}
                 />
                 <div className='chat'>
                     <VideoChat
@@ -173,13 +175,13 @@ const mapStateToProps = function (store) {
         userID: store.roomState.userID,
         players: store.gameState.players,
         myGesture: store.gameState.myGesture,
+        opponentChooseGesture: store.gameState.opponentChooseGesture,
         messages: store.chatState.messages,
         videoIsStarted: store.videoState.isStarted,
         isVideoInitiator: store.videoState.isInitiator,
         videoOffer: store.videoState.offer,
         localStream: store.videoState.localStream,
         remoteStream: store.videoState.remoteStream,
-
     };
 };
 

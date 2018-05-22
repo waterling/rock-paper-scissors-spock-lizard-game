@@ -12,6 +12,9 @@ class GameBoard extends React.Component {
                 <div className='opponent-info'>
                         <span className='opponent-name'>
                             {opponentPlayer ? 'Opponent name: ' + opponentPlayer.name : "Hasn't opponent"}
+                            <br/>
+                            {this.props.opponentChooseGesture ? <b style={{color: 'red'}}>Сделал ход! </b> : <b style={{color: ''}}>Думает</b>}
+
                         </span>
                 </div>
                 <div className='result'>
@@ -19,10 +22,10 @@ class GameBoard extends React.Component {
                         {this.props.myGesture ?
                             <div className={'result-img'}
                                  style={{
-                                         backgroundSize: '100% auto',
-                                         backgroundImage:
-                                             `url(/img/gestures/${this.props.myGesture.toLowerCase()}-big.png)`,
-                                     }}>
+                                     backgroundSize: '100% auto',
+                                     backgroundImage:
+                                         `url(/img/gestures/${this.props.myGesture.toLowerCase()}-big.png)`,
+                                 }}>
                             </div>
                             : ''}
                     </div>
@@ -36,10 +39,10 @@ class GameBoard extends React.Component {
                         {opponentPlayer.gesture ?
                             <div className={'result-img'}
                                  style={{
-                                         backgroundSize: '100% auto',
-                                         backgroundImage:
-                                             `url(/img/gestures/${opponentPlayer.gesture.toLowerCase()}-big.png)`,
-                                     }}>
+                                     backgroundSize: '100% auto',
+                                     backgroundImage:
+                                         `url(/img/gestures/${opponentPlayer.gesture.toLowerCase()}-big.png)`,
+                                 }}>
                             </div>
                             : ''}
                     </div>
@@ -51,9 +54,9 @@ class GameBoard extends React.Component {
                             <div className='div-button'
                                  key={gesture}
                                  style={{
-                                         backgroundImage:
-                                             `url(/img/gestures/${gesture.toLowerCase()}.png)`,
-                                     }}
+                                     backgroundImage:
+                                         `url(/img/gestures/${gesture.toLowerCase()}.png)`,
+                                 }}
                                  data-value={gesture}>
                             </div>
                         )

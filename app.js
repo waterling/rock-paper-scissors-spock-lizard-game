@@ -3,7 +3,6 @@ const http = require("http");
 const socketIo = require("socket.io");
 const config = require('./config.json');
 const uuidv1 = require('uuid/v1');
-const actions = require('./actions');
 const gameApi = require("./game-api");
 const Room = gameApi.Room;
 const Player = gameApi.Player;
@@ -156,7 +155,7 @@ function handleGesture(data) {
     }
     let player = room.getPlayerById(socket.id);
     player.gesture = gesture;
-    sendOpponentChooseGesture(room);
+    sendOpponentChooseGesture(socket, room);
     if (checkIfBothHaveChosen(room)) {
         let anotherPlayer = room.getAnotherPlayers(player)[0];
         let results = game.checkWhoWin(player.gesture, anotherPlayer.gesture).results;
@@ -167,8 +166,8 @@ function handleGesture(data) {
     }
 }
 
-function sendOpponentChooseGesture(room) {
-    io.to(room.id).emit(OPPONENT_CHOOSE_GESTURE);
+function sendOpponentChooseGesture(socket,room) {
+    socket.to(room.id).broadcast.emit(OPPONENT_CHOOSE_GESTURE);
 }
 
 let checkIfBothHaveChosen = room => {
@@ -208,10 +207,16 @@ let findRoomDisconnectedPlayer = (id) => {
 // data: {roomID, userID, userName, message, time}
 
 function sendMessage(data) {
-    console.log('send message', data);
-    const socket = this;
     io.to(data.roomID).emit(SEND_MESSAGE, data);
 }
+
+
+/****************************
+ *                          *
+ *    VIDEO CHAT ACTIONS    *
+ *                          *
+ ****************************/
+
 
 
 function sendVideoMessage(message) {
