@@ -124,7 +124,9 @@ class GamePage extends React.Component {
         } else {
             this.audio = undefined;
         }
-
+        setTimeout(() => {
+            this.audio = undefined
+        }, 1500)
 
     }
 
