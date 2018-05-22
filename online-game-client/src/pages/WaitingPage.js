@@ -19,7 +19,6 @@ class WaitingPage extends React.Component {
     }
 
     componentDidMount() {
-        //TODO room include game and chat
         chatApi.initChat();
     }
 
