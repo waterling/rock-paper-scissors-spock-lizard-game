@@ -3,11 +3,6 @@ import ModalName from "./modal-name";
 
 
 class WelcomeWindow extends React.Component {
-
-    copyLinkOnClick(event) {
-
-    }
-
     render() {
         return (
             <div className='welcome-window'>
@@ -37,7 +32,6 @@ class WelcomeWindow extends React.Component {
                             href={this.props.inviteLink}
                             target={'_blank'}
                             className={'invite-link'}
-                            onClick={this.copyLinkOnClick}
                         >
                             {this.props.inviteLink}
                         </a>

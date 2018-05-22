@@ -2,6 +2,8 @@ import React from "react";
 import {connect} from "react-redux";
 import {gameApi, chatApi, videoApi} from "../api";
 import TextChat from "../components/text-chat";
+import GameBoard from "../components/game-board";
+import VideoChat from "../components/video-chat";
 
 
 class GamePage extends React.Component {
@@ -10,7 +12,7 @@ class GamePage extends React.Component {
         this.state = {
             message: '',
         };
-        this.audio = new Audio;
+        this.audio = undefined;
         this.gestures = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
         this.onSend = this.onSend.bind(this);
         this.onChangeMessage = this.onChangeMessage.bind(this);
@@ -62,7 +64,7 @@ class GamePage extends React.Component {
             document.getElementById('remoteVideo').srcObject = this.props.remoteStream;
         } else if (this.props.videoOffer) {
             this.playAudio("/sound/callFromUser.mp3")
-        } else {
+        } else if (this.audio) {
             this.stopAudio();
         }
     }
@@ -95,7 +97,6 @@ class GamePage extends React.Component {
     }
 
     getCallFromUser() {
-        console.log('lol');
         if (this.props.videoOffer) {
             videoApi.getCallFromUser();
         }
@@ -107,119 +108,52 @@ class GamePage extends React.Component {
     }
 
     playAudio(path) {
+        this.audio = new Audio;
         this.audio.src = path;
         this.audio.loop = true;
         this.audio.play();
     }
 
     stopAudio() {
-        this.audio.src = "/sound/endOfCall.mp3";
-        this.audio.loop = false;
-        this.audio.play();
+        let path = "/sound/endOfCall.mp3";
+        if (this.audio.src !== path) {
+            this.audio.src = path;
+            this.audio.loop = false;
+            this.audio.play();
+        } else {
+            this.audio = undefined;
+        }
+
+
     }
 
 
     render() {
         let players = this.props.players;
-        let currentPlayer = players ? players['currentPlayer'] : {};
-        let opponentPlayer = players ? players['opponentPlayer'] : {};
-        let result = currentPlayer.result;
 
         let disabledCall = this.props.videoOffer || this.props.isVideoInitiator || this.props.videoIsStarted;
         let disabledAnswer = !this.props.videoOffer;
         let disabledHangup = !(this.props.videoOffer || this.props.videoIsStarted);
         return (
             <div className='game-page'>
-                <div className='game-board'>
-                    <div className='opponent-info'>
-                        <span className='opponent-name'>
-                            {opponentPlayer ? 'Opponent name: ' + opponentPlayer.name : "Hasn't opponent"}
-                        </span>
-                    </div>
-                    <div className='result'>
-                        <div className='gesture-selected'>
-                            {this.props.myGesture ?
-                                <div className={'result-img'}
-                                     style={
-                                         {
-                                             backgroundSize: '100% auto',
-                                             backgroundImage:
-                                                 `url(/img/gestures/${this.props.myGesture.toLowerCase()}-big.png)`,
-                                         }}>
-                                </div>
-                                : ''}
-                        </div>
-                        <div className='text-result'>
-                            {result ?
-                                <h1 className={`${result}-result`}>Result: {result}</h1>
-                                : this.props.gameMessage
-                            }
-
-                        </div>
-                        <div className='gesture-selected'>
-                            {opponentPlayer.gesture ?
-                                <div className={'result-img'}
-                                     style={
-                                         {
-                                             backgroundSize: '100% auto',
-                                             backgroundImage:
-                                                 `url(/img/gestures/${opponentPlayer.gesture.toLowerCase()}-big.png)`,
-
-                                         }}>
-                                </div>
-                                : ''}
-                        </div>
-
-                    </div>
-                    <div className='button-panel bottom-panel' onClick={this.onChooseGesture}>
-                        {this.gestures.map((gesture) => {
-                            return (
-                                <div className='div-button'
-                                     key={gesture}
-                                     style={
-                                         {
-                                             backgroundImage:
-                                                 `url(/img/gestures/${gesture.toLowerCase()}.png)`,
-                                         }}
-                                     data-value={gesture}>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
+                <GameBoard
+                    players={players}
+                    onChooseGesture={this.onChooseGesture}
+                    gestures={this.gestures}
+                    myGesture={this.props.myGesture}
+                />
                 <div className='chat'>
-                    <div className={'video-chat'}>
+                    <VideoChat
+                        disabledCall={disabledCall}
+                        disabledAnswer={disabledAnswer}
+                        disabledHangup={disabledHangup}
+                        videoOffer={this.props.videoOffer}
+                        videoIsStarted={this.props.videoIsStarted}
+                        callUser={this.callUser}
+                        getCallFromUser={this.getCallFromUser}
+                        hangUp={this.hangUp}
 
-                        {this.props.videoIsStarted ?
-                            <div>
-                                <video id="localVideo" autoPlay muted/>
-                                <video id="remoteVideo" autoPlay/>
-                            </div>
-                            : this.props.videoOffer && !this.props.isStarted ?
-                                'Вам звонят'
-                                : ''
-                        }
-                        <div className={'buttons'}>
-                            <button hidden={disabledCall}
-                                    id={'call'}
-                                    onClick={this.callUser}
-                            >
-                                Call
-                            </button>
-                            <button hidden={disabledAnswer}
-                                    id={'answer'}
-                                    onClick={this.getCallFromUser}
-                            >
-                                Answer
-                            </button>
-                            <button hidden={disabledHangup}
-                                    id={'hang-up'}
-                                    onClick={this.hangUp}
-                            >
-                                Hang up
-                            </button>
-                        </div>
-                    </div>
+                    />
                     <TextChat
                         userID={this.props.userID}
                         messages={this.props.messages}

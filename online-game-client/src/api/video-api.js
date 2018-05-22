@@ -69,7 +69,7 @@ class VideoApi {
         })
             .then(this.gotStream)
             .catch(function (e) {
-                alert('getUserMedia() error: ' + e.name);
+                console.log('getUserMedia() error: ' + e.name);
             });
     }
 
@@ -81,7 +81,7 @@ class VideoApi {
             .then(this.gotStream)
             .then(this.maybeStart)
             .catch(function (e) {
-                alert('getUserMedia() error: ' + e.name);
+                console.log('getUserMedia() error: ' + e.name);
             });
 
     }

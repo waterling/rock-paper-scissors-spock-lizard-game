@@ -12,7 +12,6 @@ const initialState = {
 const roomReducer = function (state = initialState, action) {
     switch (action.type) {
         case types.ROOM_CREATED:
-            console.log(action.inviteLink);
             return Object.assign(
                     {},
                     state,

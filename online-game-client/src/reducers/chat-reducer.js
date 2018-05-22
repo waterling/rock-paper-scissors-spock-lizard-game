@@ -23,7 +23,6 @@ const chatReducer = function (state = initialState, action) {
         }
 
         case types.CLEAR_MESSAGES: {
-            console.log('clear');
             return {
                 ...state,
                 messages: [],

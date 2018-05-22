@@ -17,7 +17,6 @@ class RoomApi {
             );
         });
         this.socket.emit(SocketActions.CREATE_ROOM, {name: name});
-        console.log('create room');
     }
 
     connectToRoom(name, roomID) {
@@ -39,7 +38,6 @@ class RoomApi {
         });
 
         this.socket.emit(SocketActions.CONNECT_TO_ROOM, {name: name, roomID: roomID});
-        console.log('try to connect to the room');
     }
 
     onUserLeave(data){
