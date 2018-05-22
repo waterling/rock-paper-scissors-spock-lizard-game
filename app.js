@@ -77,7 +77,6 @@ function createRoom(data) {
     console.log(playerName + ' ' + player.id + ' connected to the room ' + roomID);
 }
 
-//todo separate connect and start game
 function connectToRoom(data) {
     const socket = this;
     let {name, roomID} = data;
@@ -140,7 +139,6 @@ function opponentCameOut(socket, roomID) {
  *                    *
  **********************/
 
-//TODO  separate result and gesture
 function handleGesture(data) {
     const socket = this;
     let gesture = data.gesture;
@@ -166,7 +164,7 @@ function handleGesture(data) {
     }
 }
 
-function sendOpponentChooseGesture(socket,room) {
+function sendOpponentChooseGesture(socket, room) {
     socket.to(room.id).broadcast.emit(OPPONENT_CHOOSE_GESTURE);
 }
 

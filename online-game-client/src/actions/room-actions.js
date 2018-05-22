@@ -30,7 +30,7 @@ export function roomCreatedSuccessful(roomID, userID, inviteLink) {
     }
 }
 
-export function leaveUser(roomID, userID){
+export function leaveUser(roomID, userID) {
     return {
         type: types.OPPONENT_CAME_OUT,
         roomID: roomID,

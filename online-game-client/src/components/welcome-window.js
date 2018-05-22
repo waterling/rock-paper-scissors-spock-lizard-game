@@ -7,7 +7,7 @@ class WelcomeWindow extends React.Component {
         return (
             <div className='welcome-window'>
                 <span className='welcome message'>
-                    {!this.props.wait && this.props.roomID?
+                    {!this.props.wait && this.props.roomID ?
                         'Ваш оппонент покинул игру'
                         : 'Добро пожаловать'}
                 </span>
@@ -43,7 +43,7 @@ class WelcomeWindow extends React.Component {
                 }
 
                 {this.props.error ?
-                    <div style={{display: 'flex', justifyContent:'center', flexDirection:'column'}}>
+                    <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
                         Комната переполнена или не существует. Создать новую?<br/>
                         <input type="submit" value="Создать" onClick={this.props.onClickCreate}/>
                     </div>

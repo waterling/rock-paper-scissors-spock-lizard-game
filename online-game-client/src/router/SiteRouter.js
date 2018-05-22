@@ -32,7 +32,7 @@ class SiteRouter extends React.Component {
     }
 }
 
-const mapStateToProps = function(store) {
+const mapStateToProps = function (store) {
     return {
         gameStarted: store.gameState.gameStarted,
     };

@@ -11,9 +11,9 @@ const SocketActions = {
     CONNECTION: 'connection',
     DISCONNECT: 'disconnect',
     START_GAME: 'start_game',
-    OPPONENT_CHOOSE_GESTURE : 'opponent choose gesture',
-    SEND_MESSAGE : 'send message',
-    RECEIVE_MESSAGE : 'receive message',
+    OPPONENT_CHOOSE_GESTURE: 'opponent choose gesture',
+    SEND_MESSAGE: 'send message',
+    RECEIVE_MESSAGE: 'receive message',
 };
 
 export default SocketActions;

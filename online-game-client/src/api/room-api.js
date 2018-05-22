@@ -40,7 +40,7 @@ class RoomApi {
         this.socket.emit(SocketActions.CONNECT_TO_ROOM, {name: name, roomID: roomID});
     }
 
-    onUserLeave(data){
+    onUserLeave(data) {
         //may be will need in the future, but now change nothing
         store.dispatch(
             Room.leaveUser(data.roomID, data.leavedPlayerID)

@@ -13,7 +13,8 @@ class GameBoard extends React.Component {
                         <span className='opponent-name'>
                             {opponentPlayer ? 'Opponent name: ' + opponentPlayer.name : "Hasn't opponent"}
                             <br/>
-                            {this.props.opponentChooseGesture ? <b style={{color: 'red'}}>Сделал ход! </b> : <b style={{color: ''}}>Думает</b>}
+                            {this.props.opponentChooseGesture ? <b style={{color: 'red'}}>Сделал ход! </b> :
+                                <b style={{color: ''}}>Думает</b>}
 
                         </span>
                 </div>

@@ -222,13 +222,11 @@ body, html {
 
 }
 
-
 /**********************
  *                    *
  *      TEXT CHAT     *
  *                    *
  **********************/
-
 
 .text-chat {
     display: flex;
@@ -374,8 +372,6 @@ video {
     margin-left: 5px;
     width: 200px;
 }
-
-
 
 /**********************
  *                    *

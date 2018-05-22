@@ -21,7 +21,8 @@ const gameReducer = function (state = initialState, action) {
             return Object.assign({}, state, {myGesture: action.gesture});
         case types.OPPONENT_CHOOSE_GESTURE:
             return Object.assign({}, state, {
-                opponentChooseGesture: true});
+                opponentChooseGesture: true
+            });
         case types.RESULT_OF_ROUND:
             return Object.assign({}, state,
                 {

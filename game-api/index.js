@@ -97,8 +97,6 @@ module.exports.Game = class Game {
     }
 
     checkWhoWin(firstGesture, secondGesture) {
-        //TODO for n players
-        //TODO FIX this code with function doOppositeResult
         let result = 'lose';
         let status = "OK";
         if (firstGesture === secondGesture) {
@@ -143,10 +141,11 @@ module.exports.Player = class Player {
         this._gesture = value;
     }
 
-    clearGesture(){
+    clearGesture() {
         delete this._gesture;
     }
-    clearResult(){
+
+    clearResult() {
         delete this._result;
     }
 

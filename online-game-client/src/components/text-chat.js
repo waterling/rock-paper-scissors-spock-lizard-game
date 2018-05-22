@@ -4,16 +4,17 @@ const ENTER_KEY = 13;
 
 class TextChat extends React.Component {
 
-    onKeyPress(event){
+    onKeyPress(event) {
         let key = event.which || event.keyCode;
-        if(key===ENTER_KEY){
+        if (key === ENTER_KEY) {
             this.props.onSend(event);
         }
     }
+
     render() {
         return (
             <div className='text-chat'>
-                <div className={'messages'} >
+                <div className={'messages'}>
                     {this.props.messages.map(item => {
                         let time = new Date(item.time);
                         let timeStr = time.getHours() + ':' + time.getMinutes();
@@ -32,7 +33,7 @@ class TextChat extends React.Component {
                            placeholder='Enter message' value={this.props.message}
                            onChange={this.props.onChangeMessage} onKeyPress={this.onKeyPress.bind(this)}/>
                     <input className={'send-button'} type="submit" value="send" onClick={this.props.onSend}
-                     />
+                    />
                 </div>
             </div>
         )
