@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {gameApi, chatApi} from "../api";
+import {gameApi, chatApi, videoApi} from "../api";
 import TextChat from "../components/text-chat";
 
 
@@ -8,13 +8,17 @@ class GamePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            message: ''
+            message: '',
         };
+        this.audio = new Audio;
         this.gestures = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
         this.onSend = this.onSend.bind(this);
         this.onChangeMessage = this.onChangeMessage.bind(this);
         this.onChooseGesture = this.onChooseGesture.bind(this);
         this.onLoadMessages = this.onLoadMessages.bind(this);
+        this.callUser = this.callUser.bind(this);
+        this.getCallFromUser = this.getCallFromUser.bind(this);
+        this.hangUp = this.hangUp.bind(this);
     }
 
 
@@ -51,6 +55,16 @@ class GamePage extends React.Component {
         if (prevProps.messages.length !== this.props.messages.length) {
             this.onLoadMessages();
         }
+        window.onbeforeunload = this.hangUp;
+        if (this.props.videoIsStarted) {
+            this.playAudio("/sound/callToUser.mp3");
+            document.getElementById('localVideo').srcObject = this.props.localStream;
+            document.getElementById('remoteVideo').srcObject = this.props.remoteStream;
+        } else if (this.props.videoOffer) {
+            this.playAudio("/sound/callFromUser.mp3")
+        } else {
+            this.stopAudio();
+        }
     }
 
     onLoadMessages() {
@@ -76,12 +90,44 @@ class GamePage extends React.Component {
         });
     }
 
+    callUser() {
+        videoApi.callUser();
+    }
+
+    getCallFromUser() {
+        console.log('lol');
+        if (this.props.videoOffer) {
+            videoApi.getCallFromUser();
+        }
+    }
+
+    hangUp() {
+        videoApi.hangup();
+        this.stopAudio();
+    }
+
+    playAudio(path) {
+        this.audio.src = path;
+        this.audio.loop = true;
+        this.audio.play();
+    }
+
+    stopAudio() {
+        this.audio.src = "/sound/endOfCall.mp3";
+        this.audio.loop = false;
+        this.audio.play();
+    }
+
 
     render() {
         let players = this.props.players;
         let currentPlayer = players ? players['currentPlayer'] : {};
         let opponentPlayer = players ? players['opponentPlayer'] : {};
         let result = currentPlayer.result;
+
+        let disabledCall = this.props.videoOffer || this.props.isVideoInitiator || this.props.videoIsStarted;
+        let disabledAnswer = !this.props.videoOffer;
+        let disabledHangup = !(this.props.videoOffer || this.props.videoIsStarted);
         return (
             <div className='game-page'>
                 <div className='game-board'>
@@ -142,6 +188,38 @@ class GamePage extends React.Component {
                     </div>
                 </div>
                 <div className='chat'>
+                    <div className={'video-chat'}>
+
+                        {this.props.videoIsStarted ?
+                            <div>
+                                <video id="localVideo" autoPlay muted/>
+                                <video id="remoteVideo" autoPlay/>
+                            </div>
+                            : this.props.videoOffer && !this.props.isStarted ?
+                                'Вам звонят'
+                                : ''
+                        }
+                        <div className={'buttons'}>
+                            <button hidden={disabledCall}
+                                    id={'call'}
+                                    onClick={this.callUser}
+                            >
+                                Call
+                            </button>
+                            <button hidden={disabledAnswer}
+                                    id={'answer'}
+                                    onClick={this.getCallFromUser}
+                            >
+                                Answer
+                            </button>
+                            <button hidden={disabledHangup}
+                                    id={'hang-up'}
+                                    onClick={this.hangUp}
+                            >
+                                Hang up
+                            </button>
+                        </div>
+                    </div>
                     <TextChat
                         userID={this.props.userID}
                         messages={this.props.messages}
@@ -162,6 +240,12 @@ const mapStateToProps = function (store) {
         players: store.gameState.players,
         myGesture: store.gameState.myGesture,
         messages: store.chatState.messages,
+        videoIsStarted: store.videoState.isStarted,
+        isVideoInitiator: store.videoState.isInitiator,
+        videoOffer: store.videoState.offer,
+        localStream: store.videoState.localStream,
+        remoteStream: store.videoState.remoteStream,
+
     };
 };
 

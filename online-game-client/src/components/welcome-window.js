@@ -49,7 +49,10 @@ class WelcomeWindow extends React.Component {
                 }
 
                 {this.props.error ?
-                    <input type="submit" value="Создать" onClick={this.props.onClickCreate}/>
+                    <div style={{display: 'flex', justifyContent:'center', flexDirection:'column'}}>
+                        Комната переполнена или не существует. Создать новую?<br/>
+                        <input type="submit" value="Создать" onClick={this.props.onClickCreate}/>
+                    </div>
                     : ''
                 }
             </div>

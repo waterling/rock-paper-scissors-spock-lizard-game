@@ -22,6 +22,7 @@ const START_GAME = 'start_game';
 const CONNECTION = 'connection';
 const DISCONNECT = 'disconnect';
 const OPPONENT_CHOOSE_GESTURE = 'opponent choose gesture';
+const MESSAGE_VIDEO = 'message-video';
 
 
 const SEND_MESSAGE = 'send message';
@@ -47,6 +48,7 @@ io.on(CONNECTION, socket => {
     socket.on(DISCONNECT, disconnect);
 
     socket.on(RECEIVE_MESSAGE, sendMessage);
+    socket.on(MESSAGE_VIDEO, sendVideoMessage);
 });
 
 
@@ -212,9 +214,17 @@ function sendMessage(data) {
 }
 
 
-
-
-
+function sendVideoMessage(message) {
+    let socket = this;
+    for (let i in socket.rooms) {
+        if (socket.rooms.hasOwnProperty(i)) {
+            if (i !== socket.id) {
+                socket.to(i).broadcast.emit(MESSAGE_VIDEO, message);
+                break;
+            }
+        }
+    }
+}
 
 
 

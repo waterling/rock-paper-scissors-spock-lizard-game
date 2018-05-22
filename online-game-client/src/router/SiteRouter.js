@@ -1,16 +1,6 @@
 import React from "react";
-import {BrowserRouter as Router, Route, Link, Redirect} from "react-router-dom";
+import {BrowserRouter as Router, Route, Redirect} from "react-router-dom";
 import WaitingPage from "../pages/WaitingPage";
-import {
-    connectToRoom,
-    createRoom,
-    initSocket, onFullRoom,
-    onGetRoundResult,
-    onLeavePlayer, onNonexistentRoom,
-    onStartGame,
-    sendGesture
-} from "../api/workWithSocket";
-import * as CONFIG from "../config" ;
 import GamePage from "../pages/GamePage";
 import {connect} from "react-redux";
 

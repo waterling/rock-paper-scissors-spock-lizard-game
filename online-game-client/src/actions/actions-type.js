@@ -33,8 +33,19 @@ export const PLAYER_LEAVE = 'PLAYER_LEAVE';
 
 /*  CHAT ACTIONS */
 
-export const RECEIVE_MESSAGE ='RECEIVE_MESSAGE';
+export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE';
 
-export const SEND_MESSAGE ='SEND_MESSAGE';
+export const SEND_MESSAGE = 'SEND_MESSAGE';
 
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
+
+
+/*  VIDEO ACTIONS  */
+
+export const GET_PHONE_CALL = 'GET_PHONE_CALL';
+
+export const SEND_PHONE_CALL = 'SEND_PHONE_CALL';
+
+export const START_PHONE_CALL = 'START_PHONE_CALL';
+
+export const END_PHONE_CALL = 'END_PHONE_CALL';

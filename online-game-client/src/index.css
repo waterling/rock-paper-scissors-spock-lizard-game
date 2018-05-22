@@ -3,3 +3,8 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+
+video {
+  filter: hue-rotate(180deg) saturate(200%);
+}

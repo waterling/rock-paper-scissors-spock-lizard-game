@@ -207,18 +207,9 @@ body, html {
     flex-direction: column;
     align-items: stretch;
     align-content: stretch;
-    height: 70%;
-    width: 20%;
+    height: 90%;
+    width: 30%;
 
-}
-
-.video-chat {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 62.5%;
-    background: crimson;
-    margin-bottom: 10px
 }
 
 .text-chat {
@@ -248,6 +239,19 @@ body, html {
     width: 90%;
 }
 .send-button {
+    border: none;
+    width: 25%;
+    background: #d9d9d9;
+    color: #555;
+    float: left;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.send-button:hover {
+    background-color: #bbb;
 }
 
 .message {
@@ -293,6 +297,47 @@ body, html {
     background-color: #69b4f3;
 }
 
+.video-chat {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin-bottom: 10px
+}
+.videos {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+    align-content: space-around;
+    align-items: center;
+}
+.buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.buttons button {
+    border: none;
+    padding: 10px;
+    background: #d9d9d9;
+    color: #555;
+    float: left;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.buttons button:hover {
+    background-color: #bbb;
+}
+
+video {
+    margin-bottom: 5px ;
+    margin-left: 5px;
+    width: 200px;
+}
 
 ::-webkit-scrollbar-track {
     border-radius: 10px;

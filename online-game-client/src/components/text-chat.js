@@ -18,7 +18,7 @@ class TextChat extends React.Component {
                         let time = new Date(item.time);
                         let timeStr = time.getHours() + ':' + time.getMinutes();
                         let user = item.userID === this.props.userID ? 'user-1' : 'user-2';
-                        return <div className={`message-item message-${user}`}>
+                        return <div className={`message-item message-${user}`} key={item.time}>
                             <time className="message-time">{timeStr}</time>
                             <div className="message-text">
                                 <p>{item.message}</p>
